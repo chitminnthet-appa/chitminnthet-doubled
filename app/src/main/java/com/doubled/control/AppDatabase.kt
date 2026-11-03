@@ -7,13 +7,19 @@ import android.database.sqlite.SQLiteOpenHelper
 import org.json.JSONArray
 import org.json.JSONObject
 
-class AppDatabase(context: Context) : SQLiteOpenHelper(context, "double_d_management.db", null, 1) {
+class AppDatabase(context: Context) : SQLiteOpenHelper(context, "double_d_management.db", null, 2) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("""CREATE TABLE agents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, brake REAL NOT NULL DEFAULT 0, commission REAL NOT NULL DEFAULT 10, rate REAL NOT NULL DEFAULT 80, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)""")
-        db.execSQL("""CREATE TABLE entries (id INTEGER PRIMARY KEY AUTOINCREMENT, session TEXT NOT NULL, agent TEXT NOT NULL, bet_type TEXT NOT NULL, digits TEXT NOT NULL, amount REAL NOT NULL, entry_date TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)""")
+        db.execSQL("""CREATE TABLE entries (id INTEGER PRIMARY KEY AUTOINCREMENT, session TEXT NOT NULL, agent TEXT NOT NULL, bettor_name TEXT NOT NULL DEFAULT '', bet_type TEXT NOT NULL, digits TEXT NOT NULL, amount REAL NOT NULL, entry_date TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)""")
         db.execSQL("""CREATE TABLE session_results (id INTEGER PRIMARY KEY AUTOINCREMENT, session TEXT NOT NULL, result_date TEXT NOT NULL, result TEXT NOT NULL, UNIQUE(session, result_date))""")
     }
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) { }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE entries ADD COLUMN bettor_name TEXT NOT NULL DEFAULT ''")
+        }
+    }
+
     fun getAgents(): JSONArray {
         val out = JSONArray()
         readableDatabase.rawQuery("SELECT name, brake, commission, rate FROM agents ORDER BY id", null).use { c ->
@@ -21,10 +27,12 @@ class AppDatabase(context: Context) : SQLiteOpenHelper(context, "double_d_manage
         }
         return out
     }
+
     fun saveAgent(name: String, brake: Double, commission: Double, rate: Double) {
         val v = ContentValues().apply { put("name", name.trim()); put("brake", brake); put("commission", commission); put("rate", rate) }
         writableDatabase.insertWithOnConflict("agents", null, v, SQLiteDatabase.CONFLICT_REPLACE)
     }
+
     fun renameAgent(oldName: String, newName: String, brake: Double, commission: Double, rate: Double) {
         val db = writableDatabase
         db.beginTransaction()
@@ -36,18 +44,32 @@ class AppDatabase(context: Context) : SQLiteOpenHelper(context, "double_d_manage
             db.setTransactionSuccessful()
         } finally { db.endTransaction() }
     }
+
     fun deleteAgent(name: String) { writableDatabase.delete("agents", "name=?", arrayOf(name)) }
+
     fun getEntries(): JSONArray {
         val out = JSONArray()
-        readableDatabase.rawQuery("SELECT session, agent, bet_type, digits, amount, entry_date FROM entries ORDER BY id", null).use { c ->
-            while (c.moveToNext()) out.put(JSONObject().put("session", c.getString(0)).put("agent", c.getString(1)).put("type", c.getString(2)).put("digits", c.getString(3)).put("amount", c.getDouble(4)).put("date", c.getString(5)))
+        readableDatabase.rawQuery("SELECT id, session, agent, bettor_name, bet_type, digits, amount, entry_date, created_at FROM entries ORDER BY id", null).use { c ->
+            while (c.moveToNext()) out.put(JSONObject()
+                .put("id", c.getLong(0)).put("session", c.getString(1)).put("agent", c.getString(2))
+                .put("bettor", c.getString(3)).put("type", c.getString(4)).put("digits", c.getString(5))
+                .put("amount", c.getDouble(6)).put("date", c.getString(7)).put("createdAt", c.getString(8)))
         }
         return out
     }
-    fun saveEntry(session: String, agent: String, type: String, digits: String, amount: Double, date: String) {
-        val v = ContentValues().apply { put("session", session); put("agent", agent); put("bet_type", type); put("digits", digits); put("amount", amount); put("entry_date", date) }
+
+    fun saveEntry(session: String, agent: String, bettor: String, type: String, digits: String, amount: Double, date: String) {
+        val v = ContentValues().apply {
+            put("session", session); put("agent", agent); put("bettor_name", bettor)
+            put("bet_type", type); put("digits", digits); put("amount", amount); put("entry_date", date)
+        }
         writableDatabase.insert("entries", null, v)
     }
+
+    fun deleteEntries(agent: String, date: String) {
+        writableDatabase.delete("entries", "agent=? AND entry_date=?", arrayOf(agent, date))
+    }
+
     fun getResults(): JSONArray {
         val out = JSONArray()
         readableDatabase.rawQuery("SELECT session, result_date, result FROM session_results ORDER BY result_date DESC", null).use { c ->
@@ -55,6 +77,7 @@ class AppDatabase(context: Context) : SQLiteOpenHelper(context, "double_d_manage
         }
         return out
     }
+
     fun saveResult(session: String, date: String, result: String) {
         val v = ContentValues().apply { put("session", session); put("result_date", date); put("result", result) }
         writableDatabase.insertWithOnConflict("session_results", null, v, SQLiteDatabase.CONFLICT_REPLACE)
