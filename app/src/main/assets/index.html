@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2D Control — Lottery Management</title>
+  <title>AppA 2D</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,12 +40,12 @@
     <aside class="hidden lg:flex w-64 shrink-0 flex-col border-r border-white/5 bg-slate-950/55 p-5">
       <div class="flex items-center gap-3 px-2 py-3">
         <div class="grid h-11 w-11 place-items-center rounded-2xl bg-neon text-slate-950 shadow-glow"><i data-lucide="orbit" class="h-6 w-6"></i></div>
-        <div><div class="font-extrabold tracking-wide">2D CONTROL</div><div class="text-xs text-slate-500">Sales & Management</div></div>
+        <div><div class="font-extrabold tracking-wide">AppA 2D</div></div>
       </div>
       <div class="mt-10 space-y-2">
         <button data-nav="home" class="nav-btn flex w-full items-center gap-3 rounded-xl bg-white/[.07] px-4 py-3 text-left text-neon"><i data-lucide="layout-dashboard" class="h-4 w-4"></i> ပင်မစာမျက်နှာ</button>
         <button data-nav="agents" class="nav-btn flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-slate-400 hover:bg-white/5"><i data-lucide="users" class="h-4 w-4"></i> အေးဂျင့်များ</button>
-        <button data-nav="summary" class="nav-btn flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-slate-400 hover:bg-white/5"><i data-lucide="chart-no-axes-combined" class="h-4 w-4"></i> စာရင်းချုပ်</button>
+        
         <button data-nav="settings" class="nav-btn flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-slate-400 hover:bg-white/5"><i data-lucide="settings" class="h-4 w-4"></i> ဆက်တင်</button>
       </div>
       <div class="mt-auto rounded-2xl border border-neon/15 bg-neon/[.06] p-4">
@@ -56,10 +56,10 @@
 
     <main class="mx-auto w-full max-w-[1600px] flex-1 px-4 pb-28 pt-5 sm:px-6 lg:px-8 lg:pb-10 lg:pt-8">
       <!-- Header -->
-      <header class="mb-7 flex flex-wrap items-center justify-between gap-4">
+      <header class="sticky top-0 z-40 -mx-4 mb-7 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-[#090D18]/95 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div class="flex items-center gap-3 lg:hidden">
           <div class="grid h-10 w-10 place-items-center rounded-xl bg-neon text-slate-950"><i data-lucide="orbit" class="h-5 w-5"></i></div>
-          <div><div class="font-extrabold tracking-wide">2D CONTROL</div><div class="text-[11px] text-slate-500">Sales & Management</div></div>
+          <div><div class="font-extrabold tracking-wide">AppA 2D</div></div>
         </div>
         <div class="hidden lg:block"><p class="text-sm text-slate-500">မင်္ဂလာပါ 👋</p><h1 class="mt-1 text-2xl font-bold">လုပ်ငန်းအခြေအနေ</h1></div>
         <div class="ml-auto flex items-center gap-2 sm:gap-3">
@@ -77,10 +77,10 @@
       <div id="homePage">
       <!-- KPI cards -->
       <section class="mb-6 grid grid-cols-2 gap-3 xl:grid-cols-4">
-        <div class="glass rounded-2xl p-4 sm:p-5"><div class="flex items-center justify-between text-xs text-slate-400"><span>စုစုပေါင်းစာရင်း</span><i data-lucide="wallet" class="h-4 w-4 text-neon"></i></div><div id="totalAmount" class="mt-3 text-2xl font-extrabold tracking-tight">1,250,000 <span class="text-xs font-medium text-slate-500">ကျပ်</span></div><div class="mt-2 text-[11px] text-emerald-300">ယနေ့ စုစုပေါင်း</div></div>
-        <div class="glass rounded-2xl p-4 sm:p-5"><div class="flex items-center justify-between text-xs text-slate-400"><span>ဖွင့်ထားသောပွဲ</span><i data-lucide="layers" class="h-4 w-4 text-violet"></i></div><div id="sessionCount" class="mt-3 text-2xl font-extrabold">02</div><div class="mt-2 text-[11px] text-slate-500">မနက်ပိုင်း / ညနေပိုင်း</div></div>
-        <div class="glass rounded-2xl p-4 sm:p-5"><div class="flex items-center justify-between text-xs text-slate-400"><span>အေးဂျင့်စုစုပေါင်း</span><i data-lucide="users" class="h-4 w-4 text-sky-300"></i></div><div class="mt-3 text-2xl font-extrabold">18</div><div class="mt-2 text-[11px] text-slate-500">မှတ်ပုံတင်ထားသူများ</div></div>
-        <div class="glass rounded-2xl p-4 sm:p-5"><div class="flex items-center justify-between text-xs text-slate-400"><span>ရလဒ်ဂဏန်း</span><i data-lucide="hash" class="h-4 w-4 text-amber-300"></i></div><div class="mt-3 text-2xl font-extrabold tracking-[.2em]">XX</div><div class="mt-2 text-[11px] text-slate-500">မသတ်မှတ်ရသေးပါ</div></div>
+        <div class="glass rounded-2xl p-4 sm:p-5"><div class="flex items-center justify-between text-xs text-slate-400"><span>စုစုပေါင်းစာရင်း</span><i data-lucide="wallet" class="h-4 w-4 text-neon"></i></div><div id="totalAmount" class="mt-3 text-2xl font-extrabold tracking-tight">0 <span class="text-xs font-medium text-slate-500">ကျပ်</span></div><div class="mt-2 text-[11px] text-emerald-300">ရွေးချယ်ထားသောနေ့</div></div>
+        <div class="glass rounded-2xl p-4 sm:p-5"><div class="flex items-center justify-between text-xs text-slate-400"><span>ဖွင့်ထားသောပွဲ</span><i data-lucide="layers" class="h-4 w-4 text-violet"></i></div><div id="sessionCount" class="mt-3 text-2xl font-extrabold">00</div><div class="mt-2 text-[11px] text-slate-500">မနက်ပိုင်း / ညနေပိုင်း</div></div>
+        <div class="glass rounded-2xl p-4 sm:p-5"><div class="flex items-center justify-between text-xs text-slate-400"><span>အေးဂျင့်စုစုပေါင်း</span><i data-lucide="users" class="h-4 w-4 text-sky-300"></i></div><div id="agentCountHome" class="mt-3 text-2xl font-extrabold">0</div><div class="mt-2 text-[11px] text-slate-500">မှတ်ပုံတင်ထားသူများ</div></div>
+        
       </section>
 
       <div class="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,.65fr)]">
@@ -110,11 +110,7 @@
           </section>
           <section class="glass rounded-3xl p-5">
             <div class="flex items-center justify-between"><h2 class="font-bold">နောက်ဆုံးလုပ်ဆောင်ချက်</h2><i data-lucide="activity" class="h-4 w-4 text-slate-500"></i></div>
-            <div class="mt-4 space-y-4 text-sm">
-              <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-neon"></span><div><p>ကိုအောင် — စာရင်းထည့်သွင်းပြီး</p><p class="mt-1 text-xs text-slate-500">လွန်ခဲ့သော ၅ မိနစ်</p></div></div>
-              <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-violet"></span><div><p>မနက်ပိုင်း — ပွဲချိန်ဖွင့်လှစ်ပြီး</p><p class="mt-1 text-xs text-slate-500">လွန်ခဲ့သော ၂၂ မိနစ်</p></div></div>
-              <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-amber-300"></span><div><p>မသီတာ — အေးဂျင့်စာရင်းပြင်ဆင်ပြီး</p><p class="mt-1 text-xs text-slate-500">လွန်ခဲ့သော ၄၅ မိနစ်</p></div></div>
-            </div>
+            <div id="recentActivity" class="mt-4 space-y-3 text-sm"><p class="text-xs text-slate-500">ရွေးချယ်ထားသောနေ့တွင် မှတ်တမ်းမရှိသေးပါ။</p></div>
           </section>
         </aside>
       </div>
@@ -178,11 +174,11 @@
           <div class="text-right"><span id="overviewAgentName" class="text-lg font-bold">AppA</span> <span id="overviewAgentMeta" class="text-xs text-slate-400">C:10% · R:x80 · B:50000</span></div>
           <span class="text-sm font-semibold">0</span>
         </div>
-        <button class="mt-7 flex w-full items-center gap-3 rounded-xl bg-sky-400/10 px-4 py-4 text-left text-slate-200"><i data-lucide="user-round" class="h-5 w-5"></i> ကိုယ်သုံးအမည်</button>
-        <div class="mx-auto mt-16 grid max-w-md grid-cols-3 gap-3">
-          <button id="overviewBets" class="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-4 text-amber-300 hover:border-neon/40"><i data-lucide="clipboard-list" class="h-7 w-7"></i><span class="text-sm">လောင်း</span></button>
+        <div class="mt-7"><label for="bettorNameInput" class="mb-2 block text-sm text-slate-300">ထိုးသားအမည်</label><input id="bettorNameInput" class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-neon/60" placeholder="ထိုးသားအမည် ရိုက်ထည့်ပါ"></div>
+        <div class="mx-auto mt-5 grid max-w-md grid-cols-2 gap-3">
+          <button id="overviewBets" class="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-4 text-amber-300 hover:border-neon/40"><i data-lucide="clipboard-list" class="h-7 w-7"></i><span class="text-sm">လယ်ဂျာ</span></button>
           <button id="overviewHistory" class="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-4 text-slate-400 hover:border-neon/40"><i data-lucide="history" class="h-7 w-7"></i><span class="text-sm">မှတ်တမ်း</span></button>
-          <button id="overviewFinance" class="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-4 text-emerald-300 hover:border-neon/40"><i data-lucide="badge-dollar-sign" class="h-7 w-7"></i><span class="text-sm">ရှင်းတမ်း</span></button>
+          
         </div>
         <!-- POA, settings gear, and mute controls removed as requested. -->
       </section>
@@ -194,7 +190,7 @@
           <button id="backToAgents" class="rounded-xl border border-white/10 px-3 py-2 text-xs text-slate-300 hover:text-neon">အေးဂျင့်စာရင်းသို့</button>
         </div>
         <div class="mt-5 flex gap-2 border-b border-white/10">
-          <button class="bet-tab active-tab border-b-2 px-4 py-3 text-sm" data-tab="bets">ဒေါင်း</button><button class="bet-tab border-b-2 border-transparent px-4 py-3 text-sm text-slate-400" data-tab="history">မှတ်တမ်း</button><button class="bet-tab border-b-2 border-transparent px-4 py-3 text-sm text-slate-400" data-tab="finance">ရှင်းတမ်း</button>
+          <button class="bet-tab active-tab border-b-2 px-4 py-3 text-sm" data-tab="bets">လယ်ဂျာ</button><button class="bet-tab border-b-2 border-transparent px-4 py-3 text-sm text-slate-400" data-tab="history">မှတ်တမ်း</button>
         </div>
         <div id="betsPane" class="mt-5">
           <div class="workspace grid gap-5">
@@ -234,8 +230,8 @@
             </div>
           </div>
         </div>
-        <div id="historyPane" class="mt-5 hidden rounded-2xl border border-white/[.07] p-5 text-sm text-slate-400">ဤအေးဂျင့်၏ စာရင်းမှတ်တမ်းများကို ဤနေရာတွင် ပြသပါမည်။</div>
-        <div id="financePane" class="mt-5 hidden rounded-2xl border border-white/[.07] p-5 text-sm text-slate-400">စုစုပေါင်း၊ ကော်မရှင်နှင့် ရှင်းတမ်းအချက်အလက်များကို ဤနေရာတွင် ပြသပါမည်။</div>
+        <div id="historyPane" class="mt-5 hidden space-y-2"></div>
+        
       </section>
     </main>
   </div>
@@ -244,7 +240,7 @@
   <nav class="fixed bottom-0 left-0 right-0 z-30 grid grid-cols-4 border-t border-white/10 bg-slate-950/90 px-2 py-2 backdrop-blur-xl lg:hidden">
     <button data-nav="home" class="flex flex-col items-center gap-1 py-1 text-neon"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span class="text-[10px]">ပင်မ</span></button>
     <button data-nav="agents" class="flex flex-col items-center gap-1 py-1 text-slate-500"><i data-lucide="users" class="h-5 w-5"></i><span class="text-[10px]">အေးဂျင့်</span></button>
-    <button data-nav="summary" class="flex flex-col items-center gap-1 py-1 text-slate-500"><i data-lucide="chart-no-axes-combined" class="h-5 w-5"></i><span class="text-[10px]">စာရင်းချုပ်</span></button>
+    
     <button data-nav="settings" class="flex flex-col items-center gap-1 py-1 text-slate-500"><i data-lucide="settings" class="h-5 w-5"></i><span class="text-[10px]">ဆက်တင်</span></button>
   </nav>
 
@@ -253,7 +249,7 @@
     <div class="glass my-auto w-full max-w-md rounded-3xl p-6">
       <div class="flex items-start justify-between"><div><div id="agentModalEyebrow" class="text-xs font-semibold text-neon">AGENT</div><h2 id="agentModalTitle" class="mt-1 text-xl font-bold">အေးဂျင့်အသစ်ထည့်ရန်</h2></div><button class="close-modal rounded-lg p-2 text-slate-400 hover:bg-white/10"><i data-lucide="x"></i></button></div>
       <form id="agentForm" class="mt-5 space-y-4"><input id="agentEditId" type="hidden" value="">
-        <div><label class="mb-2 block text-sm text-slate-300">ကော်စားအမည်</label><input id="agentName" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="အမည်ထည့်ရန်"></div>
+        <div><label class="mb-2 block text-sm text-slate-300">ထိုးသားအမည်</label><input id="agentName" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="အမည်ထည့်ရန်"></div>
         <div><label class="mb-2 block text-sm text-slate-300">ကန့်သတ်ငွေ (Brake Amount)</label><input id="agentBrake" type="number" min="0" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="50000"></div>
         <div class="grid grid-cols-2 gap-3"><div><label class="mb-2 block text-sm text-slate-300">၁ သောင်းဖိုး ကော်ကြေး (%)</label><input id="agentCommission" type="number" min="0" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" value="1000"></div><div><label class="mb-2 block text-sm text-slate-300">၁ ရာဖိုး ပေါက်ဒေ (Rate)</label><input id="agentRate" type="number" min="0" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" value="8000"></div></div>
         <div class="flex gap-3 pt-2"><button type="button" class="close-modal flex-1 rounded-xl border border-white/10 py-3 text-sm text-slate-300">မလုပ်တော့ပါ</button><button class="flex-1 rounded-xl bg-neon py-3 text-sm font-bold text-slate-950">သိမ်းဆည်းမည်</button></div>
@@ -275,8 +271,9 @@
     document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>closeModal(b)));
     document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m){m.classList.add('hidden');m.classList.remove('flex');}}));
 
-    let currentDate = new Date(2026,10,3);
-    const dateLabel = () => { const days=['တနင်္ဂနွေ','တနင်္လာ','အင်္ဂါ','ဗုဒ္ဓဟူး','ကြာသပတေး','သောကြာ','စနေ']; const d=currentDate; $('dateLabel').textContent=`${days[d.getDay()]}, ${d.toLocaleString('en-US',{month:'short'})} ${String(d.getDate()).padStart(2,'0')}, ${d.getFullYear()}`; };
+    let currentDate = new Date();
+    const dateKey = (d=currentDate) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const dateLabel = () => { const days=['တနင်္ဂနွေ','တနင်္လာ','အင်္ဂါ','ဗုဒ္ဓဟူး','ကြာသပတေး','သောကြာ','စနေ']; const d=currentDate; $('dateLabel').textContent=`${days[d.getDay()]}, ${d.toLocaleString('en-US',{month:'short'})} ${String(d.getDate()).padStart(2,'0')}, ${d.getFullYear()}`; renderHomeData(); };
     $('prevDay').onclick=()=>{currentDate.setDate(currentDate.getDate()-1);dateLabel();};
     $('nextDay').onclick=()=>{currentDate.setDate(currentDate.getDate()+1);dateLabel();}; dateLabel();
 
@@ -296,7 +293,7 @@
     };
     document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => {
       const page = btn.dataset.nav;
-      const destinations = {home:'homePage', agents:'agentDirectory', summary:'summaryPage', settings:'settingsPage'};
+      const destinations = {home:'homePage', agents:'agentDirectory', settings:'settingsPage'};
       showPage(destinations[page] || 'homePage');
       document.querySelectorAll('[data-nav]').forEach(item => {
         const active = item.dataset.nav === page;
@@ -316,6 +313,7 @@
       if(!/^\\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း 2 လုံးကို ရိုက်ထည့်ပါ');return;}
       const card=[...document.querySelectorAll('.session-card')].find(x=>x.dataset.session===activeSession);
       if(card) card.dataset.result=value;
+      renderHomeData();
       showToast(`${activeSession} ရလဒ် ${value} သိမ်းဆည်းပြီးပါပြီ`);
     };
 
@@ -332,7 +330,7 @@
         const name=row.dataset.agent, c=row.dataset.commission||'10', r=row.dataset.rate||'80', b=money(row.dataset.brake);
         $('overviewAgentName').textContent=name; $('overviewAgentMeta').textContent=`C:${c}% · R:x${r} · B:${b}`;
         $('betAgentName').textContent=name; $('betCommission').textContent=`C: ${c}%`; $('betRate').textContent=`R: x${r}`; $('betBrake').textContent=`B: ${b}`;
-        showPage('agentOverview');
+        $('bettorNameInput').value=name; $('betAgentName').textContent=name; showPage('agentOverview');
       };
       row.querySelector('.edit-agent').onclick = e => {
         e.stopPropagation(); activeAgentRow=row;
@@ -347,13 +345,13 @@
         row.remove(); updateAgentCount(); renderBreakdown(); showToast('အေးဂျင့်ကို ဖျက်ပြီးပါပြီ');
       };
     };
-    function updateAgentCount(){ $('agentCount').textContent=String(agentRows().length).padStart(2,'0'); }
+    function updateAgentCount(){ $('agentCount').textContent=String(agentRows().length).padStart(2,'0'); $('agentCountHome').textContent=String(agentRows().length); renderHomeData(); }
     function renderBreakdown(){
       const rows=agentRows();
       let grand=0;
       $('agentBreakdownList').innerHTML='';
       rows.forEach(row=>{
-        const total=agentLedger.filter(x=>x.session===activeSession && x.agent===row.dataset.agent).reduce((s,x)=>s+x.amount,0);
+        const total=agentLedger.filter(x=>x.date===dateKey() && x.session===activeSession && x.agent===row.dataset.agent).reduce((s,x)=>s+x.amount,0);
         grand+=total;
         const item=document.createElement('div'); item.className='flex items-center justify-between rounded-xl border border-white/[.07] bg-white/[.025] p-4';
         const left=document.createElement('div'); left.innerHTML='<div class="font-semibold"></div><div class="mt-1 text-xs text-slate-500"></div>';
@@ -392,18 +390,18 @@
       activeAgentRow=null; updateAgentCount(); renderBreakdown(); $('agentForm').reset(); closeModal($('agentForm'));
     });
     agentRows().forEach(bindAgentRow);
-    $('backToAgents').onclick=()=>showPage('agentDirectory');
+    $('backToAgents').onclick=()=>showPage('agentOverview');
     $('overviewBack').onclick=()=>showPage('agentDirectory');
     $('overviewBets').onclick=()=>{showPage('bettingScreen');};
     $('overviewHistory').onclick=()=>{$('overviewBets').click();document.querySelector('[data-tab="history"]').click();};
-    $('overviewFinance').onclick=()=>{$('overviewBets').click();document.querySelector('[data-tab="finance"]').click();};
+    
     $('banBets').onclick=()=>showToast('ပိတ်ကွက်များ စာရင်းကို ဖွင့်ရန်');
     $('summaryDaily').onclick=()=>showPage('sessionBreakdownPage'); $('summaryMonthly').onclick=()=>showPage('sessionBreakdownPage'); $('sessionSummary').onclick=()=>{renderBreakdown();showPage('sessionBreakdownPage');}; $('summaryBtn').onclick=()=>showPage('summaryPage'); $('dailySummary').onclick=()=>showPage('summaryPage'); $('monthlySummary').onclick=()=>showPage('summaryPage');
 
     document.querySelectorAll('.bet-tab').forEach(tab=>tab.addEventListener('click',()=>{
       document.querySelectorAll('.bet-tab').forEach(t=>{t.classList.remove('active-tab');t.classList.add('border-transparent','text-slate-400');});
       tab.classList.add('active-tab'); tab.classList.remove('border-transparent','text-slate-400');
-      ['bets','history','finance'].forEach(p=>$(p+'Pane').classList.toggle('hidden',tab.dataset.tab!==p));
+      ['bets','history'].forEach(p=>$(p+'Pane').classList.toggle('hidden',tab.dataset.tab!==p)); if(tab.dataset.tab==='history')renderHistory();
     }));
     let digits='', selectedType='ပိ', entries=0;
     const renderEntry=()=>{$('entryPreview').textContent=digits||'ဂဏန်းထည့်ပါ';$('typePreview').textContent=selectedType;$('amountPreview').textContent=(Number($('amountInput').value)||0).toLocaleString('en-US')+' ကျပ်';};
@@ -418,6 +416,23 @@
     $('allSessions').onclick=()=>showToast('ပွဲချိန်အားလုံးကို ပြသထားပါသည်');
     if(window.lucide) lucide.createIcons();
   
+
+    function renderHistory(){
+      const name=$('bettorNameInput')?.value.trim()||$('betAgentName').textContent;
+      const rows=agentLedger.filter(x=>x.agent===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      const host=$('historyPane'); host.innerHTML='';
+      if(!rows.length){host.innerHTML='<p class="text-sm text-slate-500">ဤထိုးသား၏ မှတ်တမ်းမရှိသေးပါ။</p>';return;}
+      rows.forEach(x=>{const el=document.createElement('div');el.className='rounded-xl border border-white/10 bg-white/[.03] p-3';el.innerHTML='<div class="flex items-center justify-between gap-2"><b class="text-white"></b><span class="text-xs text-slate-400"></span></div><div class="mt-2 text-sm text-neon"></div><div class="mt-1 text-xs text-slate-400"></div>';el.children[0].children[0].textContent=x.agent;el.children[0].children[1].textContent=x.date||'';el.children[1].textContent=String(x.digits||'').padStart(2,'0');el.children[2].textContent=(x.type||'')+' · '+money(x.amount)+' ကျပ် · '+(x.session||'');host.append(el);});
+    }
+    function renderHomeData(){
+      const day=dateKey(), today=agentLedger.filter(x=>x.date===day), total=today.reduce((n,x)=>n+(Number(x.amount)||0),0);
+      if($('totalAmount'))$('totalAmount').innerHTML=money(total)+' <span class="text-xs font-medium text-slate-500">ကျပ်</span>';
+      if($('agentCountHome'))$('agentCountHome').textContent=String(agentRows().length);
+      if($('sessionCount'))$('sessionCount').textContent=String(['မနက်ပိုင်း','ညနေပိုင်း'].filter(n=>today.some(x=>x.session===n)).length).padStart(2,'0');
+      document.querySelectorAll('.session-card').forEach(card=>{const list=today.filter(x=>x.session===card.dataset.session),amount=list.reduce((n,x)=>n+(Number(x.amount)||0),0);const el=card.querySelector('.text-right .font-bold');if(el)el.textContent=money(amount);const ppl=card.querySelector('.mt-1.text-xs.text-slate-500');if(ppl)ppl.textContent='ထိုးသား '+new Set(list.map(x=>x.agent)).size+' ဦး';});
+      const recent=$('recentActivity');if(recent){recent.innerHTML='';const latest=today.slice(-5).reverse();if(!latest.length)recent.innerHTML='<p class="text-xs text-slate-500">ရွေးချယ်ထားသောနေ့တွင် မှတ်တမ်းမရှိသေးပါ။</p>';latest.forEach(x=>{const p=document.createElement('div');p.className='flex items-start justify-between gap-3 border-b border-white/5 pb-2';const l=document.createElement('div');l.textContent=x.agent+' · '+String(x.digits||'').padStart(2,'0')+' · '+(x.type||'');const r=document.createElement('b');r.textContent=money(x.amount)+' ကျပ်';p.append(l,r);recent.append(p);});}
+    }
+
     (function(){
       const hasDB=!!(window.AndroidDB&&typeof AndroidDB.getAgents==='function');
       const parse=v=>{try{return JSON.parse(v||'[]')}catch(e){return []}};
@@ -434,13 +449,13 @@
         $('agentList').innerHTML='';
         parse(AndroidDB.getAgents()).forEach(addAgent);
         updateAgentCount();
-        agentLedger=parse(AndroidDB.getEntries()).map(x=>({session:x.session,agent:x.agent,amount:Number(x.amount)||0,type:x.type,digits:x.digits,date:x.date}));
+        agentLedger=parse(AndroidDB.getEntries()).map(x=>({session:x.session,agent:x.agent,amount:Number(x.amount)||0,type:x.type,digits:String(x.digits||'').padStart(2,'0'),date:x.date}));
         entries=agentLedger.length;
         parse(AndroidDB.getResults()).forEach(r=>{
           const card=[...document.querySelectorAll('.session-card')].find(x=>x.dataset.session===r.session);
-          if(card&&r.date===new Date().toISOString().slice(0,10))card.dataset.result=r.result;
+          if(card&&r.date===dateKey())card.dataset.result=r.result;
         });
-        renderBreakdown(); if(window.lucide)lucide.createIcons();
+        renderBreakdown(); renderHomeData(); if(window.lucide)lucide.createIcons();
       }
       $('agentForm').addEventListener('submit',()=>{
         if(!hasDB)return;
@@ -456,11 +471,11 @@
       },true);
       $('addEntry').addEventListener('click',()=>{
         if(!hasDB)return;
-        const d={session:activeSession,agent:$('betAgentName').textContent,type:selectedType,digits,amount:Number($('amountInput').value)||0,date:new Date().toISOString().slice(0,10)};
+        const d={session:activeSession,agent:$('bettorNameInput')?.value.trim()||$('betAgentName').textContent,type:selectedType,digits:digits.padStart(2,'0'),amount:Number($('amountInput').value)||0,date:dateKey()};
         queueMicrotask(()=>{if(d.digits&&d.amount>0)AndroidDB.saveEntry(d.session,d.agent,d.type,d.digits,d.amount,d.date);});
       },true);
       $('saveSessionResult').addEventListener('click',()=>{
-        if(!hasDB)return; const result=$('sessionResultInput').value.trim(),session=activeSession,date=new Date().toISOString().slice(0,10);
+        if(!hasDB)return; const result=$('sessionResultInput').value.trim(),session=activeSession,date=dateKey();
         queueMicrotask(()=>{if(/^\\d{2}$/.test(result))AndroidDB.saveResult(session,date,result);});
       },true);
       hydrate();
