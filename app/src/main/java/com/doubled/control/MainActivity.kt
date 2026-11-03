@@ -45,9 +45,10 @@ private class DatabaseBridge(private val db: AppDatabase) {
         db.renameAgent(oldName, newName, brake.toDoubleOrNull() ?: 0.0, commission.toDoubleOrNull() ?: 0.0, rate.toDoubleOrNull() ?: 0.0)
     }
     @JavascriptInterface fun getEntries(): String = db.getEntries().toString()
-    @JavascriptInterface fun saveEntry(session: String, agent: String, type: String, digits: String, amount: Double, date: String) {
-        db.saveEntry(session, agent, type, digits, amount, date)
+    @JavascriptInterface fun saveEntry(session: String, agent: String, bettor: String, type: String, digits: String, amount: Double, date: String) {
+        db.saveEntry(session, agent, bettor, type, digits, amount, date)
     }
+    @JavascriptInterface fun deleteEntries(agent: String, date: String) { db.deleteEntries(agent, date) }
     @JavascriptInterface fun getResults(): String = db.getResults().toString()
     @JavascriptInterface fun saveResult(session: String, date: String, result: String) { db.saveResult(session, date, result) }
 }
