@@ -233,11 +233,12 @@
         </div>
         <div id="ledgerPane" class="mt-5 hidden">
           <div class="mb-3 flex flex-wrap items-center justify-between gap-2"><div><h3 class="font-bold" id="ledgerTitle">အေးဂျင့်၏ လယ်ဂျာ</h3><p class="mt-1 text-xs text-slate-500" id="ledgerDateLabel"></p></div><div class="flex gap-2"><button id="ledgerFull" class="rounded-lg border border-white/10 px-3 py-2 text-xs">Full</button><button id="ledgerFilter" class="rounded-lg border border-white/10 px-3 py-2 text-xs">Filter</button><button id="ledgerSort" class="rounded-lg border border-white/10 px-3 py-2 text-xs">Sort</button><button id="ledgerShare" class="rounded-lg border border-neon/30 px-3 py-2 text-xs text-neon">Share</button></div></div>
+          <div id="ledgerKinds" class="mb-3 flex gap-2 overflow-x-auto"><button class="ledger-kind active-tab rounded-lg border px-3 py-2 text-xs" data-kind="ထိုး">ထိုး</button><button class="ledger-kind rounded-lg border border-white/10 px-3 py-2 text-xs" data-kind="ပေါက်">ပေါက်</button><button class="ledger-kind rounded-lg border border-white/10 px-3 py-2 text-xs" data-kind="ရောက်">ရောက်</button><button class="ledger-kind rounded-lg border border-white/10 px-3 py-2 text-xs" data-kind="စုစုပေါင်း">စုစုပေါင်း</button></div>
           <div class="overflow-x-auto rounded-2xl border border-white/10"><table class="w-full min-w-[360px] text-left text-sm"><thead class="bg-white/[.05] text-xs text-slate-400"><tr><th class="p-3">2D</th><th class="p-3">Details</th><th class="p-3 text-right">Amount</th></tr></thead><tbody id="ledgerRows"></tbody></table></div>
           <div class="mt-3 flex justify-end"><div class="rounded-xl bg-neon/10 px-4 py-3 text-right"><div class="text-xs text-slate-400">စုစုပေါင်း</div><div id="ledgerTotal" class="mt-1 text-xl font-extrabold text-neon">0 ကျပ်</div></div></div>
         </div>
         <div id="historyPane" class="mt-5 hidden space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="font-bold">အရောင်း မှတ်တမ်းများ</h3><p id="receiptTimestamp" class="mt-1 text-xs text-slate-400"></p></div><div class="flex gap-2"><button id="receiptPrint" class="rounded-lg border border-white/10 p-2 text-slate-300" aria-label="Print">🖨</button><button id="receiptShare" class="rounded-lg border border-white/10 p-2 text-slate-300" aria-label="Share">↗</button></div></div>
+          <div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="font-bold">အရောင်း မှတ်တမ်းများ</h3><p id="receiptTimestamp" class="mt-1 text-xs text-slate-400"></p></div><div class="flex gap-2"><button id="receiptPrint" class="rounded-lg border border-white/10 p-2 text-slate-300" aria-label="Print">🖨</button><button id="receiptShare" class="rounded-lg border border-white/10 p-2 text-slate-300" aria-label="Share">↗</button><button id="receiptDelete" class="rounded-lg border border-rose-400/20 p-2 text-rose-300" aria-label="Delete">🗑</button></div></div>
           <div id="receiptBody" class="rounded-2xl border border-white/10 bg-slate-950/40 p-4"></div>
         </div>
         
@@ -333,6 +334,7 @@
     let activeAgentName = '';
     let ledgerSortDescending = true;
     let ledgerShowAll = false;
+    let ledgerKind = 'ထိုး';
     let agentLedger = [];
     const money = n => Number(n||0).toLocaleString('en-US');
     const agentRows = () => [...document.querySelectorAll('.agent-row')];
@@ -423,7 +425,7 @@
     $('clearKey').onclick=()=>{digits='';$('amountInput').value='';renderEntry();};
     $('okKey').onclick=()=>{if(!digits){showToast('ဂဏန်းထည့်ပေးပါ');return;} $('amountInput').focus();showToast('ဂဏန်းအတည်ပြုပြီးပါပြီ');};
     $('amountInput').addEventListener('input',renderEntry);
-    $('addEntry').onclick=()=>{if(!digits||!(Number($('amountInput').value)>0)){showToast('ဂဏန်းနှင့် ငွေပမာဏ ထည့်ပေးပါ');return;} entries++; agentLedger.push({session:activeSession,agent:$('bettorNameInput')?.value.trim()||$('betAgentName').textContent,type:selectedType,digits:digits.padStart(2,'0'),amount:Number($('amountInput').value),date:dateKey()}); renderBreakdown();renderHomeData();$('entryCount').innerHTML=`${entries} <span class="text-xs font-normal text-slate-500">ကြောင်း</span>`; showToast(`${digits} · ${Number($('amountInput').value).toLocaleString('en-US')} ကျပ် စာရင်းထည့်ပြီး`); digits='';$('amountInput').value='';renderEntry();};
+    $('addEntry').onclick=()=>{const amount=Number($('amountInput').value)||0,bettor=$('bettorNameInput')?.value.trim()||'';if(!activeAgentName){showToast('အေးဂျင့်ကို အရင်ရွေးချယ်ပါ');return;}if(!bettor){showToast('ထိုးသားအမည် ထည့်ပေးပါ');$('bettorNameInput')?.focus();return;}if(!digits||!(amount>0)){showToast('ဂဏန်းနှင့် ငွေပမာဏ ထည့်ပေးပါ');return;}const record={session:activeSession,agent:activeAgentName,bettor,type:selectedType,digits:digits.padStart(2,'0'),amount,date:dateKey()};if(window.AndroidDB&&AndroidDB.saveEntry)AndroidDB.saveEntry(record.session,record.agent,record.bettor,record.type,record.digits,record.amount,record.date);agentLedger.push(record);entries++;renderBreakdown();renderHomeData();$('entryCount').textContent=String(entries)+' ကြောင်း';showToast(digits+' · '+amount.toLocaleString('en-US')+' ကျပ် စာရင်းသွင်းပြီး');digits='';$('amountInput').value='';renderEntry();};
     $('pasteBtn').onclick=async()=>{try{const text=await navigator.clipboard.readText();digits+=text.replace(/\D/g,'');renderEntry();}catch(e){showToast('Clipboard ခွင့်ပြုချက် မရရှိပါ');}};
     $('allSessions').onclick=()=>showToast('ပွဲချိန်အားလုံးကို ပြသထားပါသည်');
     if(window.lucide) lucide.createIcons();
@@ -437,7 +439,7 @@
       const total=list.reduce((n,x)=>n+(Number(x.amount)||0),0);
       host.innerHTML='';const title=document.createElement('div');title.className='mb-2 font-semibold text-neon';title.textContent=value+' နှင့် ကိုက်ညီသောစာရင်း · '+list.length+' ကြောင်း';host.append(title);
       if(!list.length){const p=document.createElement('p');p.className='text-xs text-slate-500';p.textContent='ရွေးချယ်ထားသောနေ့တွင် ဤဂဏန်းအတွက် မှတ်တမ်းမရှိပါ။';host.append(p);return;}
-      list.forEach(x=>{const p=document.createElement('div');p.className='flex flex-wrap justify-between gap-2 border-t border-white/5 py-2 text-xs';const l=document.createElement('span');l.textContent=x.agent+' · '+x.type+' · '+x.session;const r=document.createElement('b');r.textContent=money(x.amount)+' ကျပ်';p.append(l,r);host.append(p);});
+      list.forEach(x=>{const p=document.createElement('div');p.className='flex flex-wrap justify-between gap-2 border-t border-white/5 py-2 text-xs';const l=document.createElement('span');l.textContent=x.agent+' · '+(x.bettor||'အမည်မသိ')+' · '+x.type+' · '+x.session;const r=document.createElement('b');r.textContent=money(x.amount)+' ကျပ်';p.append(l,r);host.append(p);});
       const sum=document.createElement('div');sum.className='mt-2 border-t border-white/10 pt-2 text-right font-bold';sum.textContent='စုစုပေါင်း '+money(total)+' ကျပ်';host.append(sum);
     }
     function buildOverviewNumberGrid(){
@@ -448,7 +450,7 @@
     $('winningDigitSearch')?.addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,2);renderDigitInfo(e.target.value,'winningDigitMatches');});
     $('bettorNameInput')?.addEventListener('input',()=>{$('betAgentName').textContent=$('bettorNameInput').value.trim()||'ထိုးသားအမည်';});
 
-    function currentAgentRows(){return agentLedger.filter(x=>x.agent===activeAgentName && (ledgerShowAll || x.date===dateKey()));}
+    function currentAgentRows(){return agentLedger.filter(x=>x.agent===activeAgentName && (ledgerShowAll || x.date===dateKey()) && (ledgerKind==='စုစုပေါင်း' || (ledgerKind==='ထိုး' ? x.kind!=='ပေါက်' && x.kind!=='ရောက်' : x.kind===ledgerKind)));}
     function renderLedger(){
       const rows=currentAgentRows().slice().sort((a,b)=>ledgerSortDescending?String(b.date||'').localeCompare(String(a.date||'')):String(a.date||'').localeCompare(String(b.date||'')));
       $('ledgerTitle').textContent=activeAgentName+' ၏ စာရင်းဇယား';
@@ -458,6 +460,7 @@
       if(!rows.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=3;td.className='p-5 text-center text-slate-500';td.textContent='မှတ်တမ်းမရှိသေးပါ။';tr.append(td);body.append(tr);}
       $('ledgerTotal').textContent=money(total)+' ကျပ်';
     }
+    document.querySelectorAll('.ledger-kind').forEach(b=>b.onclick=()=>{ledgerKind=b.dataset.kind;document.querySelectorAll('.ledger-kind').forEach(x=>{x.classList.remove('active-tab');x.classList.add('border-white/10');});b.classList.add('active-tab');b.classList.remove('border-white/10');renderLedger();});
     $('ledgerFull').onclick=()=>{ledgerShowAll=true;renderLedger();};
     $('ledgerFilter').onclick=()=>{ledgerShowAll=false;renderLedger();};
     $('ledgerSort').onclick=()=>{ledgerSortDescending=!ledgerSortDescending;renderLedger();};
@@ -467,13 +470,14 @@
       return activeAgentName+' ၏ အရောင်းမှတ်တမ်း\\n'+dateKey()+'\\n'+rows.map(x=>String(x.digits||'').padStart(2,'0')+'  '+x.type+'  '+money(x.amount)+' ကျပ်').join('\\n')+'\\nစုစုပေါင်း = '+money(total)+' ကျပ်';
     }
     $('receiptPrint').onclick=()=>window.print();
+    $('receiptDelete').onclick=()=>{if(!activeAgentName||!confirm(activeAgentName+' အတွက် '+dateKey()+' ရက်စာမှတ်တမ်းအားလုံးကို ဖျက်မှာ သေချာပါသလား။'))return;if(window.AndroidDB&&AndroidDB.deleteEntries)AndroidDB.deleteEntries(activeAgentName,dateKey());agentLedger=agentLedger.filter(x=>!(x.agent===activeAgentName&&x.date===dateKey()));renderLedger();renderHistory();renderHomeData();showToast('ရွေးချယ်ထားသောနေ့၏ မှတ်တမ်းများ ဖျက်ပြီးပါပြီ');};
     $('receiptShare').onclick=async()=>{try{if(navigator.share)await navigator.share({title:'AppA 2D Receipt',text:receiptText()});else await navigator.clipboard.writeText(receiptText());showToast('ပြေစာကို မျှဝေရန် ပြင်ဆင်ပြီးပါပြီ');}catch(e){}};
     function renderHistory(){
       const name=activeAgentName||$('betAgentName').textContent;
       const rows=agentLedger.filter(x=>x.date===dateKey()&&x.agent===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
       $('receiptTimestamp').textContent=new Date().toLocaleString('en-US',{month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
       const total=rows.reduce((n,x)=>n+(Number(x.amount)||0),0);const receipt=$('receiptBody');receipt.innerHTML='';
-      rows.forEach(x=>{const line=document.createElement('div');line.className='flex justify-between gap-3 border-b border-white/5 py-2 text-sm';const a=document.createElement('span');a.textContent=String(x.digits||'').padStart(2,'0')+' · '+x.type+' · '+x.session;const b=document.createElement('b');b.textContent=money(x.amount)+' ကျပ်';line.append(a,b);receipt.append(line);});
+      rows.forEach(x=>{const line=document.createElement('div');line.className='flex justify-between gap-3 border-b border-white/5 py-2 text-sm';const a=document.createElement('span');a.textContent=String(x.digits||'').padStart(2,'0')+' · '+(x.bettor||'အမည်မသိ')+' · '+x.type+' · '+x.session;const b=document.createElement('b');b.textContent=money(x.amount)+' ကျပ်';line.append(a,b);receipt.append(line);});
       const sum=document.createElement('div');sum.className='mt-3 flex justify-between font-bold text-neon';sum.innerHTML='<span>စုစုပေါင်း</span><span></span>';sum.children[1].textContent=money(total)+' ကျပ်';receipt.append(sum);
       if(!rows.length){const empty=document.createElement('p');empty.className='text-sm text-slate-500';empty.textContent='ဤထိုးသား၏ မှတ်တမ်းမရှိသေးပါ။';receipt.prepend(empty);}
     }
@@ -502,7 +506,7 @@
         $('agentList').innerHTML='';
         parse(AndroidDB.getAgents()).forEach(addAgent);
         updateAgentCount();
-        agentLedger=parse(AndroidDB.getEntries()).map(x=>({session:x.session,agent:x.agent,amount:Number(x.amount)||0,type:x.type,digits:String(x.digits||'').padStart(2,'0'),date:x.date}));
+        agentLedger=parse(AndroidDB.getEntries()).map(x=>({id:x.id,session:x.session,agent:x.agent,bettor:x.bettor||'',amount:Number(x.amount)||0,type:x.type,digits:String(x.digits||'').padStart(2,'0'),date:x.date,createdAt:x.createdAt||''}));
         entries=agentLedger.length;
         parse(AndroidDB.getResults()).forEach(r=>{
           const card=[...document.querySelectorAll('.session-card')].find(x=>x.dataset.session===r.session);
@@ -522,11 +526,7 @@
         const row=b.closest('.agent-row'),name=row?.dataset.agent;
         queueMicrotask(()=>{if(name&&row&&!row.isConnected)AndroidDB.deleteAgent(name);updateAgentCount();});
       },true);
-      $('addEntry').addEventListener('click',()=>{
-        if(!hasDB)return;
-        const d={session:activeSession,agent:$('bettorNameInput')?.value.trim()||$('betAgentName').textContent,type:selectedType,digits:digits.padStart(2,'0'),amount:Number($('amountInput').value)||0,date:dateKey()};
-        queueMicrotask(()=>{if(d.digits&&d.amount>0)AndroidDB.saveEntry(d.session,d.agent,d.type,d.digits,d.amount,d.date);});
-      },true);
+
       $('saveSessionResult').addEventListener('click',()=>{
         if(!hasDB)return; const result=$('sessionResultInput').value.trim(),session=activeSession,date=dateKey();
         queueMicrotask(()=>{if(/^\d{2}$/.test(result))AndroidDB.saveResult(session,date,result);});
