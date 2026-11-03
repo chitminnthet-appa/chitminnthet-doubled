@@ -35,7 +35,20 @@
   </style>
 </head>
 <body class="min-h-screen text-slate-100 font-sans">
-  <div class="min-h-screen lg:flex">
+  <section id="authGate" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#090D18] p-5">
+    <div class="glass w-full max-w-md rounded-3xl p-7">
+      <div class="mb-6 flex items-center gap-3"><div class="grid h-12 w-12 place-items-center rounded-2xl bg-neon text-slate-950"><i data-lucide="orbit" class="h-6 w-6"></i></div><div><h1 class="text-xl font-extrabold">2D CONTROL</h1><p class="text-xs text-slate-400">Admin Login · Supabase Cloud</p></div></div>
+      <form id="authForm" class="space-y-4">
+        <div><label class="mb-2 block text-sm text-slate-300">Admin Email</label><input id="authEmail" type="email" autocomplete="username" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="Email address"></div>
+        <div><label class="mb-2 block text-sm text-slate-300">Password</label><input id="authPassword" type="password" autocomplete="current-password" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="Password"></div>
+        <button id="authSubmit" class="w-full rounded-xl bg-neon py-3 font-bold text-slate-950">ဝင်ရောက်မည်</button>
+        <button id="resetPassword" type="button" class="w-full py-2 text-sm text-slate-400 hover:text-neon">Password ပြန်လည်သတ်မှတ်ရန်</button>
+        <p id="authMessage" class="hidden rounded-xl border border-rose-400/20 bg-rose-400/10 p-3 text-sm text-rose-300"></p>
+      </form>
+      <p class="mt-5 text-center text-[11px] text-slate-500">သတ်မှတ်ထားသော Admin account ဖြင့်သာ ဝင်ရောက်နိုင်သည်</p>
+    </div>
+  </section>
+  <div id="appShell" class="min-h-screen lg:flex hidden">
     <!-- Desktop sidebar -->
     <aside class="hidden lg:flex w-64 shrink-0 flex-col border-r border-white/5 bg-slate-950/55 p-5">
       <div class="flex items-center gap-3 px-2 py-3">
@@ -50,7 +63,7 @@
       </div>
       <div class="mt-auto rounded-2xl border border-neon/15 bg-neon/[.06] p-4">
         <div class="flex items-center gap-2 text-sm font-semibold text-neon"><span class="h-2 w-2 rounded-full bg-neon shadow-glow"></span> စနစ်အခြေအနေ</div>
-        <p class="mt-2 text-xs leading-5 text-slate-400">Demo mode · Local browser data</p>
+        <p class="mt-2 text-xs leading-5 text-slate-400">Supabase Cloud · ချိတ်ဆက်စောင့်ကြည့်နေသည်</p>
       </div>
     </aside>
 
@@ -70,7 +83,7 @@
           </div>
           <button id="dailySummary" class="btn hidden rounded-xl border border-white/10 px-3 py-2.5 text-sm text-slate-300 hover:border-neon/40 sm:block">ရက်ချုပ်</button>
           <button id="monthlySummary" class="btn hidden rounded-xl border border-white/10 px-3 py-2.5 text-sm text-slate-300 hover:border-neon/40 sm:block">လချုပ်</button>
-          <button class="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[.04] text-slate-300 hover:text-neon"><i data-lucide="bell" class="h-4 w-4"></i></button>
+          <button id="signOutBtn" class="rounded-xl border border-white/10 px-3 py-2 text-xs text-slate-300 hover:border-rose-400/40 hover:text-rose-300">ထွက်မည်</button>
         </div>
       </header>
 
@@ -165,11 +178,8 @@
           <div><h2 class="text-xl font-bold">အေးဂျင့်များ</h2><p class="mt-1 text-xs text-slate-500">လက်ခံထိုင်များ / ကော်စားများ စာရင်း</p></div>
           <button id="openAgentModal" class="btn flex items-center gap-2 rounded-xl bg-neon px-4 py-2.5 text-sm font-bold text-slate-950"><i data-lucide="plus" class="h-4 w-4"></i> အေးဂျင့်ထည့်ရန်</button>
         </div>
-        <div id="agentList" class="grid gap-3 md:grid-cols-2">
-          <div class="agent-row rounded-2xl border border-white/[.07] bg-white/[.035] p-4" data-agent="ကိုအောင်" data-commission="10" data-rate="80" data-brake="50000"><div class="flex items-start justify-between gap-3"><button class="agent-card min-w-0 flex-1 text-left"><div class="font-semibold">ကိုအောင်</div><div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-400"><span>C: 10%</span><span>R: x80</span><span>B: 50,000</span></div></button><div class="flex gap-1"><button class="edit-agent rounded-lg p-2 text-sky-300 hover:bg-sky-300/10" aria-label="ပြင်ရန်"><i data-lucide="pencil" class="h-4 w-4"></i></button><button class="delete-agent rounded-lg p-2 text-rose-300 hover:bg-rose-300/10" aria-label="ဖျက်ရန်"><i data-lucide="trash-2" class="h-4 w-4"></i></button></div></div></div>
-          <div class="agent-row rounded-2xl border border-white/[.07] bg-white/[.035] p-4" data-agent="မသီတာ" data-commission="8" data-rate="75" data-brake="30000"><div class="flex items-start justify-between gap-3"><button class="agent-card min-w-0 flex-1 text-left"><div class="font-semibold">မသီတာ</div><div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-400"><span>C: 8%</span><span>R: x75</span><span>B: 30,000</span></div></button><div class="flex gap-1"><button class="edit-agent rounded-lg p-2 text-sky-300 hover:bg-sky-300/10" aria-label="ပြင်ရန်"><i data-lucide="pencil" class="h-4 w-4"></i></button><button class="delete-agent rounded-lg p-2 text-rose-300 hover:bg-rose-300/10" aria-label="ဖျက်ရန်"><i data-lucide="trash-2" class="h-4 w-4"></i></button></div></div></div>
-        </div>
-      </section>
+        <div id="agentList" class="grid gap-3 md:grid-cols-2"></div>
+    </section>
 
       <!-- Agent overview (matches the reference app's intermediate agent screen) -->
       <section id="agentOverview" class="glass mt-6 hidden rounded-3xl p-4 sm:p-6">
@@ -418,5 +428,136 @@
     $('allSessions').onclick=()=>showToast('ပွဲချိန်အားလုံးကို ပြသထားပါသည်');
     if(window.lucide) lucide.createIcons();
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
+  <script>
+  (() => {
+    const SUPABASE_URL = 'https://hwlqkuqvbadehpqtgcbz.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_8En1x4u3o80mJyVbZFOmdw_rZLQIlFs';
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+    const $id = id => document.getElementById(id);
+    const moneyCloud = n => Number(n || 0).toLocaleString('en-US');
+    const isoDate = d => [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+    let cloudAgents = [], cloudSessions = [], cloudBets = [], currentCloudAgent = null, currentCloudSession = null;
+    const setAuthMessage = (msg, ok=false) => { const el=$id('authMessage'); el.textContent=msg; el.classList.remove('hidden','text-rose-300','text-emerald-300','border-rose-400/20','bg-rose-400/10'); el.classList.add(ok?'text-emerald-300':'text-rose-300',ok?'border-emerald-400/20':'border-rose-400/20',ok?'bg-emerald-400/10':'bg-rose-400/10'); };
+    const requireResult = (res, label) => { if(res.error) throw new Error(label+': '+res.error.message); return res.data; };
+    async function loadCloudData(){
+      const day=isoDate(currentDate);
+      const [a,s]=await Promise.all([
+        db.from('agents').select('*').order('created_at',{ascending:true}),
+        db.from('sessions').upsert([{session_type:'morning',session_date:day,display_name:'မနက်ပိုင်း'},{session_type:'evening',session_date:day,display_name:'ညနေပိုင်း'}],{onConflict:'session_date,session_type'}).select('*')
+      ]);
+      cloudAgents=requireResult(a,'အေးဂျင့်စာရင်းဖတ်မရပါ');
+      cloudSessions=requireResult(s,'ပွဲချိန်ဖန်တီးမရပါ');
+      const ids=cloudSessions.map(x=>x.id);
+      const [bets,results]=await Promise.all([
+        db.from('bets').select('*').in('session_id',ids),
+        db.from('session_results').select('*').in('session_id',ids)
+      ]);
+      cloudBets=requireResult(bets,'လောင်းကြေးစာရင်းဖတ်မရပါ');
+      const resultRows=requireResult(results,'ရလဒ်ဖတ်မရပါ');
+      cloudSessions.forEach(ses=>{ const found=resultRows.find(x=>x.session_id===ses.id); ses.result_number=found?.result_number||''; });
+      renderCloudAgents(); renderCloudSessions(); updateCloudKPIs(); buildCloudLedger();
+    }
+    function renderCloudAgents(){
+      const list=$id('agentList'); list.innerHTML='';
+      cloudAgents.forEach(agent=>{
+        const row=document.createElement('div'); row.className='agent-row rounded-2xl border border-white/[.07] bg-white/[.035] p-4';
+        row.dataset.id=agent.id; row.dataset.agent=agent.name; row.dataset.brake=agent.brake_amount; row.dataset.commission=agent.commission_percent; row.dataset.rate=agent.rate;
+        row.innerHTML='<div class="flex items-start justify-between gap-3"><button class="agent-card min-w-0 flex-1 text-left"><div class="font-semibold"></div><div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-400"><span></span><span></span><span></span></div></button><div class="flex gap-1"><button class="edit-agent rounded-lg p-2 text-sky-300 hover:bg-sky-300/10" aria-label="ပြင်ရန်"><i data-lucide="pencil" class="h-4 w-4"></i></button><button class="delete-agent rounded-lg p-2 text-rose-300 hover:bg-rose-300/10" aria-label="ဖျက်ရန်"><i data-lucide="trash-2" class="h-4 w-4"></i></button></div></div>';
+        row.querySelector('.font-semibold').textContent=agent.name;
+        const spans=row.querySelectorAll('.mt-3 span'); spans[0].textContent='C: '+agent.commission_percent+'%'; spans[1].textContent='R: x'+agent.rate; spans[2].textContent='B: '+moneyCloud(agent.brake_amount);
+        row.querySelector('.agent-card').onclick=()=>openCloudAgent(agent);
+        row.querySelector('.edit-agent').onclick=()=>{ currentCloudAgent=agent; $id('agentEditId').value=agent.id; $id('agentName').value=agent.name; $id('agentBrake').value=agent.brake_amount; $id('agentCommission').value=agent.commission_percent; $id('agentRate').value=agent.rate; $id('agentModalTitle').textContent='အေးဂျင့်အချက်အလက် ပြင်ဆင်ရန်'; openModal('agentModal'); };
+        row.querySelector('.delete-agent').onclick=async()=>{ if(!confirm('"'+agent.name+'" ကို ဖျက်မှာ သေချာပါသလား။'))return; const {error}=await db.from('agents').delete().eq('id',agent.id); if(error){showToast('ဖျက်မရပါ: '+error.message);return;} showToast('အေးဂျင့်ဖျက်ပြီးပါပြီ'); await loadCloudData(); };
+        list.append(row);
+      });
+      $id('agentCount').textContent=String(cloudAgents.length).padStart(2,'0');
+      if(window.lucide) lucide.createIcons();
+    }
+    function renderCloudSessions(){
+      const list=$id('sessionList'); list.innerHTML='';
+      cloudSessions.forEach(ses=>{
+        const morning=ses.session_type==='morning';
+        const total=cloudBets.filter(b=>b.session_id===ses.id).reduce((n,b)=>n+Number(b.amount),0);
+        const card=document.createElement('button'); card.className='session-card group flex w-full items-center justify-between rounded-2xl border border-white/[.07] bg-white/[.035] p-4 text-left hover:border-neon/40';
+        card.dataset.session=ses.display_name; card.dataset.id=ses.id; card.dataset.result=ses.result_number||'';
+        card.innerHTML='<div class="flex items-center gap-3"><div class="grid h-11 w-11 place-items-center rounded-xl '+(morning?'bg-violet/10 text-violet':'bg-sky-300/10 text-sky-300')+'"><i data-lucide="'+(morning?'sunrise':'moon')+'" class="h-5 w-5"></i></div><div><div class="font-semibold"></div><div class="mt-1 text-xs text-slate-500">Cloud စာရင်း</div></div></div><div class="text-right"><div class="font-bold tabular-nums"></div><div class="mt-1 text-[11px] text-slate-500">ကျပ် <i data-lucide="chevron-right" class="inline h-3 w-3"></i></div></div>';
+        card.querySelector('.font-semibold').textContent=ses.display_name; card.querySelector('.font-bold').textContent=moneyCloud(total);
+        card.onclick=()=>{currentCloudSession=ses;activeSession=ses.display_name;$id('detailTitle').textContent=ses.display_name;$id('breakdownSessionName').textContent=ses.display_name;$id('sessionResultInput').value=ses.result_number||'';showPage('sessionDetail');renderCloudBreakdown();};
+        list.append(card);
+      });
+      $id('sessionCount').textContent=String(cloudSessions.length).padStart(2,'0');
+      if(window.lucide) lucide.createIcons();
+    }
+    function updateCloudKPIs(){
+      const total=cloudBets.reduce((n,b)=>n+Number(b.amount),0);
+      $id('totalAmount').innerHTML=moneyCloud(total)+' <span class="text-xs font-medium text-slate-500">ကျပ်</span>';
+      const result=cloudSessions.map(s=>s.result_number).filter(Boolean).join(' / ')||'XX';
+      const resultCard=$id('homePage').querySelector('.grid.grid-cols-2.gap-3.xl\\:grid-cols-4 > div:last-child .text-2xl');
+      if(resultCard)resultCard.textContent=result;
+      const agentCount=$id('homePage').querySelector('.grid.grid-cols-2.gap-3.xl\\:grid-cols-4 > div:nth-child(3) .text-2xl');
+      if(agentCount)agentCount.textContent=String(cloudAgents.length).padStart(2,'0');
+    }
+    function buildCloudLedger(){
+      const byId=new Map(cloudAgents.map(a=>[a.id,a]));
+      agentLedger=cloudBets.map(b=>({session:cloudSessions.find(s=>s.id===b.session_id)?.display_name,agent:byId.get(b.agent_id)?.name||'အမည်မသိ',amount:Number(b.amount),number:b.bet_number,type:b.bet_type,id:b.id,session_id:b.session_id,agent_id:b.agent_id}));
+      renderCloudBreakdown();
+    }
+    function openCloudAgent(agent){
+      currentCloudAgent=agent; $id('overviewAgentName').textContent=agent.name; $id('overviewAgentMeta').textContent='C:'+agent.commission_percent+'% · R:x'+agent.rate+' · B:'+moneyCloud(agent.brake_amount);
+      $id('betAgentName').textContent=agent.name; $id('betCommission').textContent='C: '+agent.commission_percent+'%'; $id('betRate').textContent='R: x'+agent.rate; $id('betBrake').textContent='B: '+moneyCloud(agent.brake_amount); showPage('agentOverview');
+    }
+    function renderCloudBreakdown(){
+      if(!$id('agentBreakdownList'))return;
+      const rows=cloudAgents; let grand=0; const list=$id('agentBreakdownList'); list.innerHTML='';
+      rows.forEach(agent=>{const total=agentLedger.filter(x=>x.session===activeSession&&x.agent_id===agent.id).reduce((n,x)=>n+x.amount,0);grand+=total;
+        const item=document.createElement('div');item.className='flex items-center justify-between rounded-xl border border-white/[.07] bg-white/[.025] p-4';
+        const label=document.createElement('span');label.textContent=agent.name;const amount=document.createElement('b');amount.textContent=moneyCloud(total)+' ကျပ်';item.append(label,amount);list.append(item);
+      });
+      $id('breakdownGrandTotal').textContent=moneyCloud(grand)+' ကျပ်';$id('sessionTotalAmount').innerHTML=moneyCloud(grand)+' <span class="text-xs text-slate-500">ကျပ်</span>';
+    }
+    async function saveAgent(e){
+      e.preventDefault(); const payload={name:$id('agentName').value.trim(),brake_amount:Number($id('agentBrake').value||0),commission_percent:Number($id('agentCommission').value||0),rate:Number($id('agentRate').value||80)};
+      if(!payload.name||payload.brake_amount<0||payload.commission_percent<0||payload.rate<=0){showToast('အချက်အလက်များကို ပြန်စစ်ပါ');return;}
+      let res=currentCloudAgent ? await db.from('agents').update(payload).eq('id',currentCloudAgent.id).select().single() : await db.from('agents').insert(payload).select().single();
+      if(res.error){showToast('အေးဂျင့်သိမ်းမရပါ: '+res.error.message);return;}
+      currentCloudAgent=null;$id('agentForm').reset();closeModal($id('agentForm'));showToast('အေးဂျင့်အချက်အလက် သိမ်းပြီးပါပြီ');await loadCloudData();
+    }
+    async function saveResult(){
+      const value=$id('sessionResultInput').value.trim();
+      if(!/^\\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း ၂ လုံး ထည့်ပါ');return;}
+      if(!currentCloudSession){showToast('ပွဲချိန်ကို ပြန်ရွေးပါ');return;}
+      const {error}=await db.from('session_results').upsert({session_id:currentCloudSession.id,result_number:value},{onConflict:'session_id'});
+      if(error){showToast('ရလဒ်သိမ်းမရပါ: '+error.message);return;}
+      currentCloudSession.result_number=value;showToast('ရလဒ်ဂဏန်း သိမ်းဆည်းပြီးပါပြီ');await loadCloudData();
+    }
+    async function addCloudBet(){
+      if(!currentCloudAgent||!currentCloudSession){showToast('အေးဂျင့်နှင့် ပွဲချိန်ကို ရွေးပါ');return;}
+      if(!digits||!(Number($id('amountInput').value)>0)){showToast('ဂဏန်းနှင့် ငွေပမာဏ ထည့်ပါ');return;}
+      const payload={session_id:currentCloudSession.id,agent_id:currentCloudAgent.id,bet_number:digits,bet_type:selectedType,amount:Number($id('amountInput').value)};
+      const {error}=await db.from('bets').insert(payload);if(error){showToast('စာရင်းသိမ်းမရပါ: '+error.message);return;}
+      digits='';$id('amountInput').value='';renderEntry();showToast('စာရင်း Cloud ထဲသိမ်းပြီးပါပြီ');await loadCloudData();
+    }
+    const originalForm=$id('agentForm');const replacementForm=originalForm.cloneNode(true);originalForm.replaceWith(replacementForm);$id('agentForm').addEventListener('submit',saveAgent);
+    $id('openAgentModal').addEventListener('click',()=>{currentCloudAgent=null;$id('agentEditId').value='';$id('agentForm').reset();$id('agentCommission').value='10';$id('agentRate').value='80';$id('agentModalTitle').textContent='အေးဂျင့်အသစ်ထည့်ရန်';});
+    $id('saveSessionResult').onclick=saveResult;$id('addEntry').onclick=addCloudBet;
+    $id('sessionTotalCard').onclick=()=>{ $id('breakdownSessionName').textContent=activeSession;renderCloudBreakdown();showPage('sessionBreakdownPage'); };
+    $id('prevDay').onclick=async()=>{currentDate.setDate(currentDate.getDate()-1);dateLabel();await loadCloudData();};
+    $id('nextDay').onclick=async()=>{currentDate.setDate(currentDate.getDate()+1);dateLabel();await loadCloudData();};
+    $id('dateLabel').textContent='';
+    $id('resetPassword').onclick=async()=>{const email=$id('authEmail').value.trim();if(!email){setAuthMessage('Email ထည့်ပါ');return;}const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin});setAuthMessage(error?error.message:'Password ပြန်လည်သတ်မှတ်ရန် Email ပို့ပြီးပါပြီ',!error);};
+    $id('authForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$id('authSubmit');btn.disabled=true;btn.textContent='ဝင်ရောက်နေသည်...';const {data,error}=await db.auth.signInWithPassword({email:$id('authEmail').value.trim(),password:$id('authPassword').value});btn.disabled=false;btn.textContent='ဝင်ရောက်မည်';if(error){setAuthMessage(error.message);return;}if(data.user){await enterApp(data.user);}});
+    async function enterApp(user){
+      $id('authGate').classList.add('hidden');$id('appShell').classList.remove('hidden');
+      try{await loadCloudData();}catch(err){showToast(err.message);console.error(err);}
+    }
+    $id('signOutBtn').onclick=async()=>{await db.auth.signOut();location.reload();};
+    db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){$id('appShell').classList.add('hidden');$id('authGate').classList.remove('hidden');}else if(session?.user&&$id('appShell').classList.contains('hidden')){enterApp(session.user);}});
+    db.auth.getSession().then(({data,error})=>{if(error){setAuthMessage(error.message);return;}if(data.session)enterApp(data.session.user);});
+    if(window.lucide)lucide.createIcons();
+  })();
+  </script>
+
 </body>
 </html>
