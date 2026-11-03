@@ -528,7 +528,7 @@
     }
     async function saveResult(){
       const value=$id('sessionResultInput').value.trim();
-      if(!/^\\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း ၂ လုံး ထည့်ပါ');return;}
+      if(!/^\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း ၂ လုံး ထည့်ပါ');return;}
       if(!currentCloudSession){showToast('ပွဲချိန်ကို ပြန်ရွေးပါ');return;}
       const {error}=await db.from('session_results').upsert({session_id:currentCloudSession.id,result_number:value},{onConflict:'session_id'});
       if(error){showToast('ရလဒ်သိမ်းမရပါ: '+error.message);return;}
