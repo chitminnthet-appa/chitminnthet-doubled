@@ -274,9 +274,9 @@
 
     let currentDate = new Date();
     const dateKey = (d=currentDate) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const dateLabel = () => { const days=['တနင်္ဂနွေ','တနင်္လာ','အင်္ဂါ','ဗုဒ္ဓဟူး','ကြာသပတေး','သောကြာ','စနေ']; const d=currentDate; $('dateLabel').textContent=`${days[d.getDay()]}, ${d.toLocaleString('en-US',{month:'short'})} ${String(d.getDate()).padStart(2,'0')}, ${d.getFullYear()}`; renderHomeData(); };
-    $('prevDay').onclick=()=>{currentDate.setDate(currentDate.getDate()-1);dateLabel();};
-    $('nextDay').onclick=()=>{currentDate.setDate(currentDate.getDate()+1);dateLabel();}; dateLabel();
+    const dateLabel = () => { const days=['တနင်္ဂနွေ','တနင်္လာ','အင်္ဂါ','ဗုဒ္ဓဟူး','ကြာသပတေး','သောကြာ','စနေ']; const d=currentDate; $('dateLabel').textContent=`${days[d.getDay()]}, ${d.toLocaleString('en-US',{month:'short'})} ${String(d.getDate()).padStart(2,'0')}, ${d.getFullYear()}`; };
+    $('prevDay').onclick=()=>{currentDate.setDate(currentDate.getDate()-1);dateLabel();renderHomeData();};
+    $('nextDay').onclick=()=>{currentDate.setDate(currentDate.getDate()+1);dateLabel();renderHomeData();}; dateLabel();
 
     // Standard sessions are fixed: morning and evening only.
     function updateSessionCount(){ $('sessionCount').textContent=String(document.querySelectorAll('.session-card').length).padStart(2,'0'); }
@@ -412,7 +412,7 @@
     $('clearKey').onclick=()=>{digits='';$('amountInput').value='';renderEntry();};
     $('okKey').onclick=()=>{if(!digits){showToast('ဂဏန်းထည့်ပေးပါ');return;} $('amountInput').focus();showToast('ဂဏန်းအတည်ပြုပြီးပါပြီ');};
     $('amountInput').addEventListener('input',renderEntry);
-    $('addEntry').onclick=()=>{if(!digits||!(Number($('amountInput').value)>0)){showToast('ဂဏန်းနှင့် ငွေပမာဏ ထည့်ပေးပါ');return;} entries++; agentLedger.push({session:activeSession,agent:$('betAgentName').textContent,amount:Number($('amountInput').value)}); renderBreakdown();$('entryCount').innerHTML=`${entries} <span class="text-xs font-normal text-slate-500">ကြောင်း</span>`; showToast(`${digits} · ${Number($('amountInput').value).toLocaleString('en-US')} ကျပ် စာရင်းထည့်ပြီး`); digits='';$('amountInput').value='';renderEntry();};
+    $('addEntry').onclick=()=>{if(!digits||!(Number($('amountInput').value)>0)){showToast('ဂဏန်းနှင့် ငွေပမာဏ ထည့်ပေးပါ');return;} entries++; agentLedger.push({session:activeSession,agent:$('bettorNameInput')?.value.trim()||$('betAgentName').textContent,type:selectedType,digits:digits.padStart(2,'0'),amount:Number($('amountInput').value),date:dateKey()}); renderBreakdown();renderHomeData();$('entryCount').innerHTML=`${entries} <span class="text-xs font-normal text-slate-500">ကြောင်း</span>`; showToast(`${digits} · ${Number($('amountInput').value).toLocaleString('en-US')} ကျပ် စာရင်းထည့်ပြီး`); digits='';$('amountInput').value='';renderEntry();};
     $('pasteBtn').onclick=async()=>{try{const text=await navigator.clipboard.readText();digits+=text.replace(/\D/g,'');renderEntry();}catch(e){showToast('Clipboard ခွင့်ပြုချက် မရရှိပါ');}};
     $('allSessions').onclick=()=>showToast('ပွဲချိန်အားလုံးကို ပြသထားပါသည်');
     if(window.lucide) lucide.createIcons();
