@@ -73,6 +73,7 @@
           <button class="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[.04] text-slate-300 hover:text-neon"><i data-lucide="bell" class="h-4 w-4"></i></button>
         </div>
       </header>
+      <section id="resultLookup" class="glass mb-6 rounded-2xl p-4"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-bold">ထွက်ဂဏန်းနှင့် ကိုက်ညီသောစာရင်း</h2><p class="mt-1 text-xs text-slate-500">ရွေးထားသောနေ့နှင့် ပွဲချိန်၏ ထွက်ဂဏန်း ၂ လုံးကို ရိုက်ထည့်ပါ</p></div><input id="winningDigitSearch" inputmode="numeric" maxlength="2" placeholder="00" class="w-24 rounded-xl border border-white/10 bg-slate-950/60 px-3 py-3 text-center text-xl font-bold tracking-widest text-neon outline-none focus:border-neon"></div><div id="winningDigitMatches" class="mt-3 text-sm text-slate-400">ထွက်ဂဏန်း ၂ လုံးထည့်ပါ။</div></section>
 
       <div id="homePage">
       <!-- KPI cards -->
@@ -174,7 +175,7 @@
           <div class="text-right"><span id="overviewAgentName" class="text-lg font-bold">AppA</span> <span id="overviewAgentMeta" class="text-xs text-slate-400">C:10% · R:x80 · B:50000</span></div>
           <span class="text-sm font-semibold">0</span>
         </div>
-        <div class="mt-7"><label for="bettorNameInput" class="mb-2 block text-sm text-slate-300">ထိုးသားအမည်</label><input id="bettorNameInput" class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-neon/60" placeholder="ထိုးသားအမည် ရိုက်ထည့်ပါ"></div>
+        <div class="mt-7"><label for="bettorNameInput" class="mb-2 block text-sm text-slate-300">ထိုးသားအမည်</label><input id="bettorNameInput" class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-neon/60" placeholder="ထိုးသားအမည် ရိုက်ထည့်ပါ"><div class="mt-4"><label for="overviewDigitInput" class="mb-2 block text-sm text-slate-300">ဂဏန်းရွေးရန် (00–99)</label><input id="overviewDigitInput" inputmode="numeric" maxlength="2" placeholder="ဂဏန်း ၂ လုံး" class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-lg font-bold tracking-widest text-neon outline-none focus:border-neon"><div id="overviewNumberGrid" class="mt-3 grid grid-cols-5 gap-2 sm:grid-cols-10"></div><div id="overviewDigitInfo" class="mt-3 rounded-xl bg-white/[.04] p-3 text-sm text-slate-400">00 မှ 99 အထိ ဂဏန်းတစ်ခုကို ရွေးပါ။</div></div></div>
         <div class="mx-auto mt-5 grid max-w-md grid-cols-2 gap-3">
           <button id="overviewBets" class="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-4 text-amber-300 hover:border-neon/40"><i data-lucide="clipboard-list" class="h-7 w-7"></i><span class="text-sm">လယ်ဂျာ</span></button>
           <button id="overviewHistory" class="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-4 text-slate-400 hover:border-neon/40"><i data-lucide="history" class="h-7 w-7"></i><span class="text-sm">မှတ်တမ်း</span></button>
@@ -330,7 +331,7 @@
         const name=row.dataset.agent, c=row.dataset.commission||'10', r=row.dataset.rate||'80', b=money(row.dataset.brake);
         $('overviewAgentName').textContent=name; $('overviewAgentMeta').textContent=`C:${c}% · R:x${r} · B:${b}`;
         $('betAgentName').textContent=name; $('betCommission').textContent=`C: ${c}%`; $('betRate').textContent=`R: x${r}`; $('betBrake').textContent=`B: ${b}`;
-        $('bettorNameInput').value=name; $('betAgentName').textContent=name; showPage('agentOverview');
+        $('bettorNameInput').value=name; $('betAgentName').textContent=name; buildOverviewNumberGrid(); $('bettorNameInput').value=name; $('betAgentName').textContent=name; showPage('agentOverview');
       };
       row.querySelector('.edit-agent').onclick = e => {
         e.stopPropagation(); activeAgentRow=row;
@@ -417,6 +418,25 @@
     if(window.lucide) lucide.createIcons();
   
 
+
+    function renderDigitInfo(value,hostId){
+      const host=$(hostId); if(!host)return;
+      if(!/^\d{2}$/.test(value)){host.textContent='ဂဏန်း ၂ လုံးကို ရွေးချယ်ပါ။';return;}
+      const list=agentLedger.filter(x=>x.date===dateKey()&&String(x.digits||'').padStart(2,'0')===value);
+      const total=list.reduce((n,x)=>n+(Number(x.amount)||0),0);
+      host.innerHTML='';const title=document.createElement('div');title.className='mb-2 font-semibold text-neon';title.textContent=value+' နှင့် ကိုက်ညီသောစာရင်း · '+list.length+' ကြောင်း';host.append(title);
+      if(!list.length){const p=document.createElement('p');p.className='text-xs text-slate-500';p.textContent='ရွေးချယ်ထားသောနေ့တွင် ဤဂဏန်းအတွက် မှတ်တမ်းမရှိပါ။';host.append(p);return;}
+      list.forEach(x=>{const p=document.createElement('div');p.className='flex flex-wrap justify-between gap-2 border-t border-white/5 py-2 text-xs';const l=document.createElement('span');l.textContent=x.agent+' · '+x.type+' · '+x.session;const r=document.createElement('b');r.textContent=money(x.amount)+' ကျပ်';p.append(l,r);host.append(p);});
+      const sum=document.createElement('div');sum.className='mt-2 border-t border-white/10 pt-2 text-right font-bold';sum.textContent='စုစုပေါင်း '+money(total)+' ကျပ်';host.append(sum);
+    }
+    function buildOverviewNumberGrid(){
+      const grid=$('overviewNumberGrid');if(!grid||grid.dataset.ready)return;grid.dataset.ready='1';
+      for(let i=0;i<100;i++){const v=String(i).padStart(2,'0'),b=document.createElement('button');b.type='button';b.className='numkey py-2 text-sm';b.textContent=v;b.addEventListener('click',()=>{$('overviewDigitInput').value=v;renderDigitInfo(v,'overviewDigitInfo');});grid.append(b);}
+    }
+    $('overviewDigitInput')?.addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,2);renderDigitInfo(e.target.value,'overviewDigitInfo');});
+    $('winningDigitSearch')?.addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,2);renderDigitInfo(e.target.value,'winningDigitMatches');});
+    $('bettorNameInput')?.addEventListener('input',()=>{$('betAgentName').textContent=$('bettorNameInput').value.trim()||'ထိုးသားအမည်';});
+
     function renderHistory(){
       const name=$('bettorNameInput')?.value.trim()||$('betAgentName').textContent;
       const rows=agentLedger.filter(x=>x.agent===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
@@ -455,7 +475,7 @@
           const card=[...document.querySelectorAll('.session-card')].find(x=>x.dataset.session===r.session);
           if(card&&r.date===dateKey())card.dataset.result=r.result;
         });
-        renderBreakdown(); renderHomeData(); if(window.lucide)lucide.createIcons();
+        renderBreakdown(); renderHomeData(); buildOverviewNumberGrid(); if(window.lucide)lucide.createIcons();
       }
       $('agentForm').addEventListener('submit',()=>{
         if(!hasDB)return;
