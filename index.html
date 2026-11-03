@@ -253,7 +253,7 @@
       <div class="flex items-start justify-between"><div><div id="agentModalEyebrow" class="text-xs font-semibold text-neon">AGENT</div><h2 id="agentModalTitle" class="mt-1 text-xl font-bold">အေးဂျင့်အသစ်ထည့်ရန်</h2></div><button class="close-modal rounded-lg p-2 text-slate-400 hover:bg-white/10"><i data-lucide="x"></i></button></div>
       <form id="agentForm" class="mt-5 space-y-4"><input id="agentEditId" type="hidden" value="">
         <div><label class="mb-2 block text-sm text-slate-300">ကော်စားအမည်</label><input id="agentName" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="အမည်ထည့်ရန်"></div>
-        <div><label class="mb-2 block text-sm text-slate-300">ကန့်သတ်ငွေ (Brake Amount)</label><input id="agentBrake" type="number" min="0" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="50000"></div>
+        <div><label class="mb-2 block text-sm text-slate-300">ကန့်သတ်ငွေ (Brake Amount)</label><input id="agentBrake" type="number" min="0" value="0" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" placeholder="50000"></div>
         <div class="grid grid-cols-2 gap-3"><div><label class="mb-2 block text-sm text-slate-300">၁ သောင်းဖိုး ကော်ကြေး (%)</label><input id="agentCommission" type="number" min="0" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" value="1000"></div><div><label class="mb-2 block text-sm text-slate-300">၁ ရာဖိုး ပေါက်ဒေ (Rate)</label><input id="agentRate" type="number" min="0" required class="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-none focus:border-neon/60" value="8000"></div></div>
         <div class="flex gap-3 pt-2"><button type="button" class="close-modal flex-1 rounded-xl border border-white/10 py-3 text-sm text-slate-300">မလုပ်တော့ပါ</button><button class="flex-1 rounded-xl bg-neon py-3 text-sm font-bold text-slate-950">သိမ်းဆည်းမည်</button></div>
       </form>
@@ -513,11 +513,36 @@
       $id('breakdownGrandTotal').textContent=moneyCloud(grand)+' ကျပ်';$id('sessionTotalAmount').innerHTML=moneyCloud(grand)+' <span class="text-xs text-slate-500">ကျပ်</span>';
     }
     async function saveAgent(e){
-      e.preventDefault(); const payload={name:$id('agentName').value.trim(),brake_amount:Number($id('agentBrake').value||0),commission_percent:Number($id('agentCommission').value||0),rate:Number($id('agentRate').value||80)};
-      if(!payload.name||payload.brake_amount<0||payload.commission_percent<0||payload.rate<=0){showToast('အချက်အလက်များကို ပြန်စစ်ပါ');return;}
-      let res=currentCloudAgent ? await db.from('agents').update(payload).eq('id',currentCloudAgent.id).select().single() : await db.from('agents').insert(payload).select().single();
-      if(res.error){showToast('အေးဂျင့်သိမ်းမရပါ: '+res.error.message);return;}
-      currentCloudAgent=null;$id('agentForm').reset();closeModal($id('agentForm'));showToast('အေးဂျင့်အချက်အလက် သိမ်းပြီးပါပြီ');await loadCloudData();
+      e.preventDefault();
+      const form=$id('agentForm'), submit=form.querySelector('button[type="submit"]')||form.querySelector('button:last-child');
+      const payload={
+        name:$id('agentName').value.trim(),
+        brake_amount:Number($id('agentBrake').value||0),
+        commission_percent:Number($id('agentCommission').value||0),
+        rate:Number($id('agentRate').value||80)
+      };
+      if(!payload.name||!Number.isFinite(payload.brake_amount)||payload.brake_amount<0||!Number.isFinite(payload.commission_percent)||payload.commission_percent<0||!Number.isFinite(payload.rate)||payload.rate<=0){
+        showToast('အမည်၊ ကန့်သတ်ငွေ၊ ကော်ကြေးနှင့် ပေါက်ဒေကို မှန်ကန်စွာ ဖြည့်ပါ');return;
+      }
+      if(submit){submit.disabled=true;submit.textContent='သိမ်းဆည်းနေသည်…';}
+      try{
+        const request=currentCloudAgent
+          ? db.from('agents').update(payload).eq('id',currentCloudAgent.id).select('id,name,brake_amount,commission_percent,rate,is_active,created_at').single()
+          : db.from('agents').insert(payload).select('id,name,brake_amount,commission_percent,rate,is_active,created_at').single();
+        const {data,error}=await request;
+        if(error) throw error;
+        if(!data) throw new Error('Database မှ သိမ်းဆည်းမှုအတည်ပြုချက် မရရှိပါ');
+        currentCloudAgent=null;
+        form.reset();
+        closeModal(form);
+        showToast('အေးဂျင့်အချက်အလက် Database ထဲ သိမ်းပြီးပါပြီ');
+        try{await loadCloudData();}
+        catch(refreshError){showToast('သိမ်းပြီးပါပြီ၊ စာရင်းပြန်ဖတ်ရာတွင် ပြဿနာရှိသည်: '+(refreshError.message||refreshError));}
+      }catch(error){
+        showToast('အေးဂျင့်သိမ်းမရပါ: '+(error.message||String(error)));
+      }finally{
+        if(submit){submit.disabled=false;submit.textContent='သိမ်းဆည်းမည်';}
+      }
     }
     async function saveResult(){
       const value=$id('sessionResultInput').value.trim();
