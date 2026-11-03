@@ -475,9 +475,7 @@
       const total=rows.reduce((n,x)=>n+(Number(x.amount)||0),0);const receipt=$('receiptBody');receipt.innerHTML='';
       rows.forEach(x=>{const line=document.createElement('div');line.className='flex justify-between gap-3 border-b border-white/5 py-2 text-sm';const a=document.createElement('span');a.textContent=String(x.digits||'').padStart(2,'0')+' · '+x.type+' · '+x.session;const b=document.createElement('b');b.textContent=money(x.amount)+' ကျပ်';line.append(a,b);receipt.append(line);});
       const sum=document.createElement('div');sum.className='mt-3 flex justify-between font-bold text-neon';sum.innerHTML='<span>စုစုပေါင်း</span><span></span>';sum.children[1].textContent=money(total)+' ကျပ်';receipt.append(sum);
-      const host=$('historyPane');
-      if(!rows.length){host.innerHTML='<p class="text-sm text-slate-500">ဤထိုးသား၏ မှတ်တမ်းမရှိသေးပါ။</p>';return;}
-      rows.forEach(x=>{const el=document.createElement('div');el.className='rounded-xl border border-white/10 bg-white/[.03] p-3';el.innerHTML='<div class="flex items-center justify-between gap-2"><b class="text-white"></b><span class="text-xs text-slate-400"></span></div><div class="mt-2 text-sm text-neon"></div><div class="mt-1 text-xs text-slate-400"></div>';el.children[0].children[0].textContent=x.agent;el.children[0].children[1].textContent=x.date||'';el.children[1].textContent=String(x.digits||'').padStart(2,'0');el.children[2].textContent=(x.type||'')+' · '+money(x.amount)+' ကျပ် · '+(x.session||'');host.append(el);});
+      if(!rows.length){const empty=document.createElement('p');empty.className='text-sm text-slate-500';empty.textContent='ဤထိုးသား၏ မှတ်တမ်းမရှိသေးပါ။';receipt.prepend(empty);}
     }
     function renderHomeData(){
       const day=dateKey(), today=agentLedger.filter(x=>x.date===day), total=today.reduce((n,x)=>n+(Number(x.amount)||0),0);
