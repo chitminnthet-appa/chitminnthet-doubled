@@ -136,11 +136,11 @@
 
       <!-- Dedicated summary page -->
       <section id="summaryPage" class="glass mt-6 hidden rounded-3xl p-4 sm:p-6">
-        <div class="mb-5"><h2 class="text-xl font-bold">စာရင်းချုပ်</h2><p class="mt-1 text-xs text-slate-500">ယနေ့ လုပ်ငန်းစာရင်းအကျဉ်းချုပ်</p></div>
+        <div class="mb-5"><h2 class="text-xl font-bold">စာရင်းချုပ်</h2><p id="summaryPeriod" class="mt-1 text-xs text-slate-500">ရွေးချယ်ထားသောနေ့၏ လုပ်ငန်းစာရင်းအကျဉ်းချုပ်</p></div>
         <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">စုစုပေါင်းစာရင်း</div><div class="mt-2 text-2xl font-bold">1,250,000 <span class="text-xs text-slate-500">ကျပ်</span></div></div>
-          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">ကော်မရှင်စုစုပေါင်း</div><div class="mt-2 text-2xl font-bold">125,000 <span class="text-xs text-slate-500">ကျပ်</span></div></div>
-          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">စာရင်းသွင်းပြီး</div><div class="mt-2 text-2xl font-bold">82%</div></div>
+          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">စုစုပေါင်းစာရင်း</div><div id="summaryTotal" class="mt-2 text-2xl font-bold">0 <span class="text-xs text-slate-500">ကျပ်</span></div></div>
+          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">ကော်မရှင်စုစုပေါင်း</div><div id="summaryCommission" class="mt-2 text-2xl font-bold">0 <span class="text-xs text-slate-500">ကျပ်</span></div></div>
+          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">စာရင်းသွင်းပြီး</div><div id="summaryCount" class="mt-2 text-2xl font-bold">0</div></div>
         </div>
         <div class="mt-5 flex flex-wrap gap-2"><button id="summaryDaily" class="rounded-xl bg-neon px-4 py-2.5 text-sm font-bold text-slate-950">ရက်ချုပ်</button><button id="summaryMonthly" class="rounded-xl border border-white/10 px-4 py-2.5 text-sm">လချုပ်</button></div>
       </section>
@@ -244,8 +244,8 @@
             </div>
           </div>
         </div>
-        <div id="historyPane" class="mt-5 hidden rounded-2xl border border-white/[.07] p-5 text-sm text-slate-400">ဤအေးဂျင့်၏ စာရင်းမှတ်တမ်းများကို ဤနေရာတွင် ပြသပါမည်။</div>
-        <div id="financePane" class="mt-5 hidden rounded-2xl border border-white/[.07] p-5 text-sm text-slate-400">စုစုပေါင်း၊ ကော်မရှင်နှင့် ရှင်းတမ်းအချက်အလက်များကို ဤနေရာတွင် ပြသပါမည်။</div>
+        <div id="historyPane" class="mt-5 hidden rounded-2xl border border-white/[.07] p-4 text-sm text-slate-400"><div id="historyList" class="space-y-2">စာရင်းမှတ်တမ်း မရှိသေးပါ</div></div>
+        <div id="financePane" class="mt-5 hidden rounded-2xl border border-white/[.07] p-4 text-sm text-slate-400"><div class="grid gap-3 sm:grid-cols-3"><div class="rounded-xl bg-white/[.035] p-3"><div class="text-xs">စုစုပေါင်းလောင်းကြေး</div><b id="financeTotal" class="mt-2 block text-lg text-white">0 ကျပ်</b></div><div class="rounded-xl bg-white/[.035] p-3"><div class="text-xs">ကော်မရှင်</div><b id="financeCommission" class="mt-2 block text-lg text-white">0 ကျပ်</b></div><div class="rounded-xl bg-white/[.035] p-3"><div class="text-xs">စာရင်းအရေအတွက်</div><b id="financeEntries" class="mt-2 block text-lg text-white">0</b></div></div></div>
       </section>
     </main>
   </div>
@@ -459,7 +459,7 @@
       cloudBets=requireResult(bets,'လောင်းကြေးစာရင်းဖတ်မရပါ');
       const resultRows=requireResult(results,'ရလဒ်ဖတ်မရပါ');
       cloudSessions.forEach(ses=>{ const found=resultRows.find(x=>x.session_id===ses.id); ses.result_number=found?.result_number||''; });
-      renderCloudAgents(); renderCloudSessions(); updateCloudKPIs(); buildCloudLedger();
+      renderCloudAgents(); renderCloudSessions(); updateCloudKPIs(); buildCloudLedger(); renderRecentCloudActivity();
     }
     function renderCloudAgents(){
       const list=$id('agentList'); list.innerHTML='';
@@ -541,10 +541,50 @@
       const {error}=await db.from('bets').insert(payload);if(error){showToast('စာရင်းသိမ်းမရပါ: '+error.message);return;}
       digits='';$id('amountInput').value='';renderEntry();showToast('စာရင်း Cloud ထဲသိမ်းပြီးပါပြီ');await loadCloudData();
     }
+
+    async function renderAgentHistory(){
+      if(!currentCloudAgent||!currentCloudSession)return;
+      const {data,error}=await db.from('bets').select('*').eq('agent_id',currentCloudAgent.id).eq('session_id',currentCloudSession.id).order('created_at',{ascending:false});
+      if(error){$id('historyList').textContent='မှတ်တမ်းဖတ်မရပါ: '+error.message;return;}
+      const list=$id('historyList');list.innerHTML='';
+      if(!data.length){list.textContent='ဤပွဲချိန်အတွက် စာရင်းမရှိသေးပါ';return;}
+      data.forEach(b=>{const row=document.createElement('div');row.className='flex items-center justify-between gap-3 rounded-xl bg-white/[.035] p-3';const left=document.createElement('div');const title=document.createElement('b');title.textContent=b.bet_number+' · '+b.bet_type;const sub=document.createElement('div');sub.className='mt-1 text-xs text-slate-500';sub.textContent=new Date(b.created_at).toLocaleString('my-MM');left.append(title,sub);const amount=document.createElement('b');amount.textContent=moneyCloud(b.amount)+' ကျပ်';row.append(left,amount);list.append(row);});
+    }
+    async function renderAgentFinance(){
+      if(!currentCloudAgent||!currentCloudSession)return;
+      const rows=cloudBets.filter(b=>b.agent_id===currentCloudAgent.id&&b.session_id===currentCloudSession.id);
+      const total=rows.reduce((n,b)=>n+Number(b.amount),0), commission=total*Number(currentCloudAgent.commission_percent||0)/100;
+      $id('financeTotal').textContent=moneyCloud(total)+' ကျပ်';$id('financeCommission').textContent=moneyCloud(commission)+' ကျပ်';$id('financeEntries').textContent=String(rows.length);
+    }
+    async function renderCloudSummary(period='day'){
+      const start=new Date(currentDate.getFullYear(),period==='month'?currentDate.getMonth():currentDate.getMonth(),period==='month'?1:currentDate.getDate());
+      const end=period==='month'?new Date(currentDate.getFullYear(),currentDate.getMonth()+1,1):new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate()+1);
+      const {data:sessions,error:sErr}=await db.from('sessions').select('*').gte('session_date',isoDate(start)).lt('session_date',isoDate(end));
+      if(sErr){showToast('စာရင်းချုပ်ဖတ်မရပါ: '+sErr.message);return;}
+      const ids=sessions.map(x=>x.id);let bets=[];
+      if(ids.length){const res=await db.from('bets').select('*').in('session_id',ids);if(res.error){showToast('လောင်းကြေးဖတ်မရပါ: '+res.error.message);return;}bets=res.data;}
+      const total=bets.reduce((n,b)=>n+Number(b.amount),0), agentMap=new Map(cloudAgents.map(a=>[a.id,a]));
+      const commission=bets.reduce((n,b)=>n+Number(b.amount)*Number(agentMap.get(b.agent_id)?.commission_percent||0)/100,0);
+      $id('summaryTotal').innerHTML=moneyCloud(total)+' <span class="text-xs text-slate-500">ကျပ်</span>';
+      $id('summaryCommission').innerHTML=moneyCloud(commission)+' <span class="text-xs text-slate-500">ကျပ်</span>';
+      $id('summaryCount').textContent=String(bets.length)+' ကြောင်း';
+      $id('summaryPeriod').textContent=period==='month'?'လချုပ် · '+currentDate.toLocaleString('my-MM',{month:'long',year:'numeric'}):'ရက်ချုပ် · '+isoDate(currentDate);
+    }
+    function renderRecentCloudActivity(){
+      const target=document.querySelector('#homePage .mt-4.space-y-4.text-sm');
+      if(!target)return;target.innerHTML='';
+      const recent=[...cloudBets].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,4);
+      if(!recent.length){target.textContent='လုပ်ဆောင်ချက်အသစ် မရှိသေးပါ';return;}
+      const names=new Map(cloudAgents.map(a=>[a.id,a.name]));
+      recent.forEach(b=>{const item=document.createElement('div');item.className='flex gap-3';const dot=document.createElement('span');dot.className='mt-1 h-2 w-2 rounded-full bg-neon';const body=document.createElement('div');const title=document.createElement('p');title.textContent=(names.get(b.agent_id)||'အေးဂျင့်')+' — '+b.bet_number+' ('+moneyCloud(b.amount)+' ကျပ်)';const time=document.createElement('p');time.className='mt-1 text-xs text-slate-500';time.textContent=new Date(b.created_at).toLocaleString('my-MM');body.append(title,time);item.append(dot,body);target.append(item);});
+    }
+
     const originalForm=$id('agentForm');const replacementForm=originalForm.cloneNode(true);originalForm.replaceWith(replacementForm);$id('agentForm').addEventListener('submit',saveAgent);
     $id('openAgentModal').addEventListener('click',()=>{currentCloudAgent=null;$id('agentEditId').value='';$id('agentForm').reset();$id('agentCommission').value='10';$id('agentRate').value='80';$id('agentModalTitle').textContent='အေးဂျင့်အသစ်ထည့်ရန်';});
     $id('saveSessionResult').onclick=saveResult;$id('addEntry').onclick=addCloudBet;
     $id('sessionTotalCard').onclick=()=>{ $id('breakdownSessionName').textContent=activeSession;renderCloudBreakdown();showPage('sessionBreakdownPage'); };
+    document.querySelectorAll('.bet-tab').forEach(tab=>tab.addEventListener('click',()=>{if(tab.dataset.tab==='history')renderAgentHistory();if(tab.dataset.tab==='finance')renderAgentFinance();}));
+    $id('summaryDaily').onclick=()=>renderCloudSummary('day');$id('summaryMonthly').onclick=()=>renderCloudSummary('month');$id('dailySummary').onclick=()=>{showPage('summaryPage');renderCloudSummary('day');};$id('monthlySummary').onclick=()=>{showPage('summaryPage');renderCloudSummary('month');};
     $id('prevDay').onclick=async()=>{currentDate.setDate(currentDate.getDate()-1);dateLabel();await loadCloudData();};
     $id('nextDay').onclick=async()=>{currentDate.setDate(currentDate.getDate()+1);dateLabel();await loadCloudData();};
     $id('dateLabel').textContent='';
