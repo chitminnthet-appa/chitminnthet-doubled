@@ -323,7 +323,7 @@
     $('breakdownBack').onclick=()=>showPage('sessionDetail');
     $('saveSessionResult').onclick=()=>{
       const value=$('sessionResultInput').value.trim();
-      if(!/^\\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း 2 လုံးကို ရိုက်ထည့်ပါ');return;}
+      if(!/^\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း 2 လုံးကို ရိုက်ထည့်ပါ');return;}
       const card=[...document.querySelectorAll('.session-card')].find(x=>x.dataset.session===activeSession);
       if(card) card.dataset.result=value;
       showToast(`${activeSession} ရလဒ် ${value} သိမ်းဆည်းပြီးပါပြီ`);
@@ -450,6 +450,8 @@
       cloudAgents=requireResult(a,'အေးဂျင့်စာရင်းဖတ်မရပါ');
       cloudSessions=requireResult(s,'ပွဲချိန်ဖန်တီးမရပါ');
       const ids=cloudSessions.map(x=>x.id);
+      if(!currentCloudSession || !ids.includes(currentCloudSession.id)){currentCloudSession=cloudSessions.find(x=>x.session_type==='morning')||cloudSessions[0];}
+      if(currentCloudSession) activeSession=currentCloudSession.display_name;
       const [bets,results]=await Promise.all([
         db.from('bets').select('*').in('session_id',ids),
         db.from('session_results').select('*').in('session_id',ids)
