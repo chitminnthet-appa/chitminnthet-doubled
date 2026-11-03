@@ -190,8 +190,8 @@
           <div><div class="text-xs text-slate-500">စာရင်းသွင်းနေသူ</div><h2 id="betAgentName" class="mt-1 text-xl font-bold">ကိုအောင်</h2><div class="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-400"><span id="betCommission" class="rounded-lg bg-white/5 px-2 py-1">C: 10%</span><span id="betRate" class="rounded-lg bg-white/5 px-2 py-1">R: x80</span><span id="betBrake" class="rounded-lg bg-white/5 px-2 py-1">B: 50,000</span></div></div>
           <button id="backToAgents" class="rounded-xl border border-white/10 px-3 py-2 text-xs text-slate-300 hover:text-neon">အေးဂျင့်စာရင်းသို့</button>
         </div>
-        <div class="mt-5 flex gap-2 border-b border-white/10">
-          <button class="bet-tab active-tab border-b-2 px-4 py-3 text-sm" data-tab="bets">လယ်ဂျာ</button><button class="bet-tab border-b-2 border-transparent px-4 py-3 text-sm text-slate-400" data-tab="history">မှတ်တမ်း</button>
+        <div class="mt-5 flex gap-2 overflow-x-auto border-b border-white/10">
+          <button class="bet-tab active-tab border-b-2 px-4 py-3 text-sm" data-tab="bets">စာရင်းသွင်း</button><button class="bet-tab border-b-2 border-transparent px-4 py-3 text-sm text-slate-400" data-tab="ledger">လယ်ဂျာ</button><button class="bet-tab border-b-2 border-transparent px-4 py-3 text-sm text-slate-400" data-tab="history">မှတ်တမ်း/ပြေစာ</button>
         </div>
         <div id="betsPane" class="mt-5">
           <div class="workspace grid gap-5">
@@ -231,7 +231,15 @@
             </div>
           </div>
         </div>
-        <div id="historyPane" class="mt-5 hidden space-y-2"></div>
+        <div id="ledgerPane" class="mt-5 hidden">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2"><div><h3 class="font-bold" id="ledgerTitle">အေးဂျင့်၏ လယ်ဂျာ</h3><p class="mt-1 text-xs text-slate-500" id="ledgerDateLabel"></p></div><div class="flex gap-2"><button id="ledgerFull" class="rounded-lg border border-white/10 px-3 py-2 text-xs">Full</button><button id="ledgerFilter" class="rounded-lg border border-white/10 px-3 py-2 text-xs">Filter</button><button id="ledgerSort" class="rounded-lg border border-white/10 px-3 py-2 text-xs">Sort</button><button id="ledgerShare" class="rounded-lg border border-neon/30 px-3 py-2 text-xs text-neon">Share</button></div></div>
+          <div class="overflow-x-auto rounded-2xl border border-white/10"><table class="w-full min-w-[360px] text-left text-sm"><thead class="bg-white/[.05] text-xs text-slate-400"><tr><th class="p-3">2D</th><th class="p-3">Details</th><th class="p-3 text-right">Amount</th></tr></thead><tbody id="ledgerRows"></tbody></table></div>
+          <div class="mt-3 flex justify-end"><div class="rounded-xl bg-neon/10 px-4 py-3 text-right"><div class="text-xs text-slate-400">စုစုပေါင်း</div><div id="ledgerTotal" class="mt-1 text-xl font-extrabold text-neon">0 ကျပ်</div></div></div>
+        </div>
+        <div id="historyPane" class="mt-5 hidden space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="font-bold">အရောင်း မှတ်တမ်းများ</h3><p id="receiptTimestamp" class="mt-1 text-xs text-slate-400"></p></div><div class="flex gap-2"><button id="receiptPrint" class="rounded-lg border border-white/10 p-2 text-slate-300" aria-label="Print">🖨</button><button id="receiptShare" class="rounded-lg border border-white/10 p-2 text-slate-300" aria-label="Share">↗</button></div></div>
+          <div id="receiptBody" class="rounded-2xl border border-white/10 bg-slate-950/40 p-4"></div>
+        </div>
         
       </section>
     </main>
@@ -322,6 +330,9 @@
     $('openAgentModal').onclick=openNewAgent;
     let activeSession = 'မနက်ပိုင်း';
     let activeAgentRow = null;
+    let activeAgentName = '';
+    let ledgerSortDescending = true;
+    let ledgerShowAll = false;
     let agentLedger = [];
     const money = n => Number(n||0).toLocaleString('en-US');
     const agentRows = () => [...document.querySelectorAll('.agent-row')];
@@ -329,7 +340,7 @@
       const card = row.querySelector('.agent-card');
       card.onclick = () => {
         const name=row.dataset.agent, c=row.dataset.commission||'10', r=row.dataset.rate||'80', b=money(row.dataset.brake);
-        $('overviewAgentName').textContent=name; $('overviewAgentMeta').textContent=`C:${c}% · R:x${r} · B:${b}`;
+        activeAgentName=name; $('overviewAgentName').textContent=name; $('overviewAgentMeta').textContent=`C:${c}% · R:x${r} · B:${b}`;
         $('betAgentName').textContent=name; $('betCommission').textContent=`C: ${c}%`; $('betRate').textContent=`R: x${r}`; $('betBrake').textContent=`B: ${b}`;
         $('bettorNameInput').value=name; $('betAgentName').textContent=name; buildOverviewNumberGrid(); $('bettorNameInput').value=name; $('betAgentName').textContent=name; showPage('agentOverview');
       };
@@ -402,7 +413,7 @@
     document.querySelectorAll('.bet-tab').forEach(tab=>tab.addEventListener('click',()=>{
       document.querySelectorAll('.bet-tab').forEach(t=>{t.classList.remove('active-tab');t.classList.add('border-transparent','text-slate-400');});
       tab.classList.add('active-tab'); tab.classList.remove('border-transparent','text-slate-400');
-      ['bets','history'].forEach(p=>$(p+'Pane').classList.toggle('hidden',tab.dataset.tab!==p)); if(tab.dataset.tab==='history')renderHistory();
+      ['bets','ledger','history'].forEach(p=>$(p+'Pane').classList.toggle('hidden',tab.dataset.tab!==p)); if(tab.dataset.tab==='ledger')renderLedger(); if(tab.dataset.tab==='history')renderHistory();
     }));
     let digits='', selectedType='ပိ', entries=0;
     const renderEntry=()=>{$('entryPreview').textContent=digits||'ဂဏန်းထည့်ပါ';$('typePreview').textContent=selectedType;$('amountPreview').textContent=(Number($('amountInput').value)||0).toLocaleString('en-US')+' ကျပ်';};
@@ -437,10 +448,34 @@
     $('winningDigitSearch')?.addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,2);renderDigitInfo(e.target.value,'winningDigitMatches');});
     $('bettorNameInput')?.addEventListener('input',()=>{$('betAgentName').textContent=$('bettorNameInput').value.trim()||'ထိုးသားအမည်';});
 
+    function currentAgentRows(){return agentLedger.filter(x=>x.agent===activeAgentName && (ledgerShowAll || x.date===dateKey()));}
+    function renderLedger(){
+      const rows=currentAgentRows().slice().sort((a,b)=>ledgerSortDescending?String(b.date||'').localeCompare(String(a.date||'')):String(a.date||'').localeCompare(String(b.date||'')));
+      $('ledgerTitle').textContent=activeAgentName+' ၏ စာရင်းဇယား';
+      $('ledgerDateLabel').textContent=ledgerShowAll?'ရက်စွဲအားလုံး':'ရွေးချယ်ထားသောနေ့ · '+dateKey();
+      const body=$('ledgerRows');body.innerHTML='';let total=0;
+      rows.forEach(x=>{total+=Number(x.amount)||0;const tr=document.createElement('tr');tr.className='border-t border-white/5';[String(x.digits||'').padStart(2,'0'),(x.type||'')+' · '+(x.session||''),money(x.amount)+' ကျပ်'].forEach((v,i)=>{const td=document.createElement('td');td.className='p-3 '+(i===2?'text-right font-semibold':'');td.textContent=v;tr.append(td);});body.append(tr);});
+      if(!rows.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=3;td.className='p-5 text-center text-slate-500';td.textContent='မှတ်တမ်းမရှိသေးပါ။';tr.append(td);body.append(tr);}
+      $('ledgerTotal').textContent=money(total)+' ကျပ်';
+    }
+    $('ledgerFull').onclick=()=>{ledgerShowAll=true;renderLedger();};
+    $('ledgerFilter').onclick=()=>{ledgerShowAll=false;renderLedger();};
+    $('ledgerSort').onclick=()=>{ledgerSortDescending=!ledgerSortDescending;renderLedger();};
+    $('ledgerShare').onclick=async()=>{const rows=currentAgentRows();const txt=activeAgentName+' ၏ လယ်ဂျာ\\n'+rows.map(x=>String(x.digits||'').padStart(2,'0')+' | '+x.type+' | '+money(x.amount)+' ကျပ်').join('\\n')+'\\nစုစုပေါင်း '+money(rows.reduce((n,x)=>n+(Number(x.amount)||0),0))+' ကျပ်';try{if(navigator.share)await navigator.share({title:'AppA 2D Ledger',text:txt});else await navigator.clipboard.writeText(txt);showToast('လယ်ဂျာကို မျှဝေရန် ပြင်ဆင်ပြီးပါပြီ');}catch(e){}};
+    function receiptText(){
+      const rows=agentLedger.filter(x=>x.agent===activeAgentName && x.date===dateKey());const total=rows.reduce((n,x)=>n+(Number(x.amount)||0),0);
+      return activeAgentName+' ၏ အရောင်းမှတ်တမ်း\\n'+dateKey()+'\\n'+rows.map(x=>String(x.digits||'').padStart(2,'0')+'  '+x.type+'  '+money(x.amount)+' ကျပ်').join('\\n')+'\\nစုစုပေါင်း = '+money(total)+' ကျပ်';
+    }
+    $('receiptPrint').onclick=()=>window.print();
+    $('receiptShare').onclick=async()=>{try{if(navigator.share)await navigator.share({title:'AppA 2D Receipt',text:receiptText()});else await navigator.clipboard.writeText(receiptText());showToast('ပြေစာကို မျှဝေရန် ပြင်ဆင်ပြီးပါပြီ');}catch(e){}};
     function renderHistory(){
-      const name=$('bettorNameInput')?.value.trim()||$('betAgentName').textContent;
+      const name=activeAgentName||$('betAgentName').textContent;
       const rows=agentLedger.filter(x=>x.date===dateKey()&&x.agent===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-      const host=$('historyPane'); host.innerHTML='';
+      $('receiptTimestamp').textContent=new Date().toLocaleString('en-US',{month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const total=rows.reduce((n,x)=>n+(Number(x.amount)||0),0);const receipt=$('receiptBody');receipt.innerHTML='';
+      rows.forEach(x=>{const line=document.createElement('div');line.className='flex justify-between gap-3 border-b border-white/5 py-2 text-sm';const a=document.createElement('span');a.textContent=String(x.digits||'').padStart(2,'0')+' · '+x.type+' · '+x.session;const b=document.createElement('b');b.textContent=money(x.amount)+' ကျပ်';line.append(a,b);receipt.append(line);});
+      const sum=document.createElement('div');sum.className='mt-3 flex justify-between font-bold text-neon';sum.innerHTML='<span>စုစုပေါင်း</span><span></span>';sum.children[1].textContent=money(total)+' ကျပ်';receipt.append(sum);
+      const host=$('historyPane');
       if(!rows.length){host.innerHTML='<p class="text-sm text-slate-500">ဤထိုးသား၏ မှတ်တမ်းမရှိသေးပါ။</p>';return;}
       rows.forEach(x=>{const el=document.createElement('div');el.className='rounded-xl border border-white/10 bg-white/[.03] p-3';el.innerHTML='<div class="flex items-center justify-between gap-2"><b class="text-white"></b><span class="text-xs text-slate-400"></span></div><div class="mt-2 text-sm text-neon"></div><div class="mt-1 text-xs text-slate-400"></div>';el.children[0].children[0].textContent=x.agent;el.children[0].children[1].textContent=x.date||'';el.children[1].textContent=String(x.digits||'').padStart(2,'0');el.children[2].textContent=(x.type||'')+' · '+money(x.amount)+' ကျပ် · '+(x.session||'');host.append(el);});
     }
