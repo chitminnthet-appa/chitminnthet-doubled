@@ -311,7 +311,7 @@
     $('breakdownBack').onclick=()=>showPage('sessionDetail');
     $('saveSessionResult').onclick=()=>{
       const value=$('sessionResultInput').value.trim();
-      if(!/^\\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း 2 လုံးကို ရိုက်ထည့်ပါ');return;}
+      if(!/^\d{2}$/.test(value)){showToast('ရလဒ်ဂဏန်း 2 လုံးကို ရိုက်ထည့်ပါ');return;}
       const card=[...document.querySelectorAll('.session-card')].find(x=>x.dataset.session===activeSession);
       if(card) card.dataset.result=value;
       renderHomeData();
@@ -439,7 +439,7 @@
 
     function renderHistory(){
       const name=$('bettorNameInput')?.value.trim()||$('betAgentName').textContent;
-      const rows=agentLedger.filter(x=>x.agent===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      const rows=agentLedger.filter(x=>x.date===dateKey()&&x.agent===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
       const host=$('historyPane'); host.innerHTML='';
       if(!rows.length){host.innerHTML='<p class="text-sm text-slate-500">ဤထိုးသား၏ မှတ်တမ်းမရှိသေးပါ။</p>';return;}
       rows.forEach(x=>{const el=document.createElement('div');el.className='rounded-xl border border-white/10 bg-white/[.03] p-3';el.innerHTML='<div class="flex items-center justify-between gap-2"><b class="text-white"></b><span class="text-xs text-slate-400"></span></div><div class="mt-2 text-sm text-neon"></div><div class="mt-1 text-xs text-slate-400"></div>';el.children[0].children[0].textContent=x.agent;el.children[0].children[1].textContent=x.date||'';el.children[1].textContent=String(x.digits||'').padStart(2,'0');el.children[2].textContent=(x.type||'')+' · '+money(x.amount)+' ကျပ် · '+(x.session||'');host.append(el);});
@@ -496,7 +496,7 @@
       },true);
       $('saveSessionResult').addEventListener('click',()=>{
         if(!hasDB)return; const result=$('sessionResultInput').value.trim(),session=activeSession,date=dateKey();
-        queueMicrotask(()=>{if(/^\\d{2}$/.test(result))AndroidDB.saveResult(session,date,result);});
+        queueMicrotask(()=>{if(/^\d{2}$/.test(result))AndroidDB.saveResult(session,date,result);});
       },true);
       hydrate();
     })();
