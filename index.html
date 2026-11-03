@@ -140,7 +140,7 @@
         <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">စုစုပေါင်းစာရင်း</div><div id="summaryTotal" class="mt-2 text-2xl font-bold">0 <span class="text-xs text-slate-500">ကျပ်</span></div></div>
           <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">ကော်မရှင်စုစုပေါင်း</div><div id="summaryCommission" class="mt-2 text-2xl font-bold">0 <span class="text-xs text-slate-500">ကျပ်</span></div></div>
-          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">စာရင်းသွင်းပြီး</div><div id="summaryCount" class="mt-2 text-2xl font-bold">0</div></div>
+          <div class="rounded-2xl bg-white/[.035] p-4"><div class="text-xs text-slate-400">စာရင်းအရေအတွက်</div><div id="summaryCount" class="mt-2 text-2xl font-bold">0</div></div>
         </div>
         <div class="mt-5 flex flex-wrap gap-2"><button id="summaryDaily" class="rounded-xl bg-neon px-4 py-2.5 text-sm font-bold text-slate-950">ရက်ချုပ်</button><button id="summaryMonthly" class="rounded-xl border border-white/10 px-4 py-2.5 text-sm">လချုပ်</button></div>
       </section>
@@ -584,6 +584,7 @@
     $id('saveSessionResult').onclick=saveResult;$id('addEntry').onclick=addCloudBet;
     $id('sessionTotalCard').onclick=()=>{ $id('breakdownSessionName').textContent=activeSession;renderCloudBreakdown();showPage('sessionBreakdownPage'); };
     document.querySelectorAll('.bet-tab').forEach(tab=>tab.addEventListener('click',()=>{if(tab.dataset.tab==='history')renderAgentHistory();if(tab.dataset.tab==='finance')renderAgentFinance();}));
+    document.querySelectorAll('[data-nav=\"summary\"]').forEach(btn=>btn.addEventListener('click',()=>renderCloudSummary('day')));$id('summaryBtn').onclick=()=>{showPage('summaryPage');renderCloudSummary('day');};
     $id('summaryDaily').onclick=()=>renderCloudSummary('day');$id('summaryMonthly').onclick=()=>renderCloudSummary('month');$id('dailySummary').onclick=()=>{showPage('summaryPage');renderCloudSummary('day');};$id('monthlySummary').onclick=()=>{showPage('summaryPage');renderCloudSummary('month');};
     $id('prevDay').onclick=async()=>{currentDate.setDate(currentDate.getDate()-1);dateLabel();await loadCloudData();};
     $id('nextDay').onclick=async()=>{currentDate.setDate(currentDate.getDate()+1);dateLabel();await loadCloudData();};
